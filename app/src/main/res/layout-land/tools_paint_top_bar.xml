@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/top_paint_bar"
+    android:background="@color/grey">
+    <LinearLayout
+        android:id="@+id/layout_pick_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_gravity="center">
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/button_pick_color"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/pick_color"
+        android:layout_gravity="center"
+        android:layout_margin="2dp"
+       />
+    <TextView
+        android:id="@+id/text_pick_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick Color"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:textSize="7sp">
+    </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/undo_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/undo_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_baseline_undo_24"
+            android:gravity="center"
+            android:layout_margin="2dp"
+            />
+        <TextView
+            android:id="@+id/undo_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Undo"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="7sp">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/redo_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/redo_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_baseline_redo_24"
+            android:gravity="center"
+            android:layout_margin="2dp"
+            />
+        <TextView
+            android:id="@+id/redo_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Redo"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="7sp">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/clear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/save_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_baseline_save_24"
+            android:gravity="center"
+            android:layout_margin="2dp"
+            />
+        <TextView
+            android:id="@+id/save_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="7sp">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/save_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_gravity="center">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/clear_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_baseline_clear_24"
+            android:gravity="center"
+            android:layout_margin="2dp"
+            />
+        <TextView
+            android:id="@+id/clear_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear All"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="7sp">
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>
