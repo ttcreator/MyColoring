@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Category1">
+    tools:context=".categoryFragment.OldCategory">
 
 <androidx.recyclerview.widget.RecyclerView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/recyclerView">
+    android:id="@+id/recyclerViewOld">
 </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>

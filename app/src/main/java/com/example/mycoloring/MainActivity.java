@@ -2,28 +2,23 @@ package com.example.mycoloring;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
-import android.text.style.TtsSpan;
+import android.view.MenuItem;
 
-import com.denzcoskun.imageslider.ImageSlider;
-import com.denzcoskun.imageslider.models.SlideModel;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.example.mycoloring.menuItemFragment.MyDrawing;
+import com.example.mycoloring.menuItemFragment.MyGalery;
+import com.example.mycoloring.menuItemFragment.Search;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.ArrayList;
-import java.util.List;
+public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
-public class MainActivity extends AppCompatActivity {
-
-    ViewPager2 viewPager2;
-    ViewPagerAdapter viewPagerAdapter;
-    TabLayout tabLayoutCategory;
+    BottomNavigationView bottomNavigationView;
+    MyGalery myGalery;
+    MyDrawing myDrawingFragment;
+    Search searchFragment;
 
 
     @Override
@@ -31,28 +26,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageSlider imageSlider = findViewById(R.id.imageSlider);
-        viewPager2 = findViewById(R.id.pager);
-        tabLayoutCategory = findViewById(R.id.tabLayoutCategory);
-        ArrayList<SlideModel> images = new ArrayList<>();
+        bottomNavigationView = findViewById(R.id.bottom_menu);
+        bottomNavigationView.setOnItemSelectedListener(this);
+        bottomNavigationView.setSelectedItemId(R.id.myGalery);
 
-        images.add(new SlideModel(R.drawable.horizontal_image_1, null));
-        images.add(new SlideModel(R.drawable.horizontal_image_2, null));
-        images.add(new SlideModel(R.drawable.horizontal_image_3, null));
-        imageSlider.setImageList(images);
+    }
 
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());
-        viewPagerAdapter.addFragment(new Category1(), "CATEGOTY1");
-        viewPagerAdapter.addFragment(new Category2(), "CATEGOTY2");
-        viewPagerAdapter.addFragment(new Fragment_three(), "FR THREE");
-        viewPager2.setAdapter(viewPagerAdapter);
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.myGalery:
+                myGalery = new MyGalery();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, myGalery).commit();
+                return true;
 
-        tabLayoutCategory.setTabMode(tabLayoutCategory.MODE_SCROLLABLE);
+            case R.id.search:
+                searchFragment = new Search();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, searchFragment).commit();
+                return true;
 
-        new TabLayoutMediator(tabLayoutCategory, viewPager2,
-                (tab, position) -> tab.setText(viewPagerAdapter.getTitle(position))
-        ).attach();
-
-
+            case R.id.myDrawing:
+                myDrawingFragment = new MyDrawing();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, myDrawingFragment).commit();
+                return true;
+        }
+        return false;
     }
 }

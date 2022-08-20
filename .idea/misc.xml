@@ -19,22 +19,29 @@
         <entry key="app/src/main/res/drawable/white_rectangle_bg.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/white_round_bg.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/white_round_bg_80.xml" value="0.1" />
-        <entry key="app/src/main/res/layout-land/activity_coloring.xml" value="0.125" />
+        <entry key="app/src/main/res/layout-land/activity_coloring.xml" value="0.165" />
         <entry key="app/src/main/res/layout-land/tools_paint_top_bar.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_coloring.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.125" />
         <entry key="app/src/main/res/layout/dialog_blank.xml" value="0.335" />
         <entry key="app/src/main/res/layout/dialog_one_button.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_two_button.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/fragment_best_category.xml" value="0.10989583333333333" />
         <entry key="app/src/main/res/layout/fragment_category1.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_category2.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_category3.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_my_drawing.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_my_galery.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_new_category.xml" value="0.184375" />
+        <entry key="app/src/main/res/layout/fragment_old_category.xml" value="0.184375" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_three.xml" value="0.184375" />
         <entry key="app/src/main/res/layout/paint_tools.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/progress_dialog.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/tools_paint_top_bar.xml" value="0.25" />
         <entry key="app/src/main/res/layout/view_colorpicker.xml" value="0.10052083333333334" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.18333333333333332" />
       </map>
     </option>
   </component>

@@ -22,14 +22,21 @@ public class SharedPreferencesFactory {
         editor.commit();
     }
 
-    public static void saveString (Context context, String key, String string) {
+    public static void saveStringUrl (Context context, String key, String url) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Name, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, string);
+        editor.putString(key, url);
         editor.commit();
     }
 
-    public static String getString (Context context, String key) {
+    public static void saveStringName (Context context, String key, String name) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Name, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, name);
+        editor.commit();
+    }
+
+    public static String getStringUrl (Context context, String key) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Name, Context.MODE_PRIVATE);
         return sharedPreferences.getString(key, null);
     }

@@ -35,7 +35,8 @@
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:padding="2dp"
-                    android:src="@color/white" />
+                    android:src="@color/white"
+                    android:background="@drawable/set_color_selected"/>
 
 
                 <ImageView
@@ -45,7 +46,8 @@
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:padding="2dp"
-                    android:src="@color/white" />
+                    android:src="@color/white"
+                    android:background="@drawable/set_color_default"/>
 
                 <ImageView
                     android:id="@+id/current_pen3"
@@ -54,7 +56,8 @@
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:padding="2dp"
-                    android:src="@color/white" />
+                    android:src="@color/white"
+                    android:background="@drawable/set_color_default"/>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -132,73 +135,6 @@
                     android:layout_weight="1"
                     android:background="#ffff7e00" />
             </TableRow>
-
-            <!--            <TableRow-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="0dp"-->
-            <!--                android:layout_weight="1">-->
-
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#ffffae00" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#ffffcc00" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#ffcdc527" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#fff8de2c" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#fffdf87c" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#ffcc0000" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#ffff2a2a" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#fffc637c" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#fff7aec2" />-->
-
-            <!--                <androidx.appcompat.widget.AppCompatButton-->
-            <!--                    android:layout_width="0dp"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_weight="1"-->
-            <!--                    android:background="#fffac9c4" />-->
-            <!--            </TableRow>-->
         </TableLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -212,8 +148,15 @@
             android:id="@+id/color_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/my_image">
-        </uk.co.senab.photoview.ColourImageView>
+            android:adjustViewBounds="true"
+            android:scaleType="fitEnd" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
     </FrameLayout>
 
     <include layout="@layout/tools_paint_top_bar"

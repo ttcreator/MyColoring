@@ -13,7 +13,7 @@
         android:layout_alignParentEnd="true"
         android:background="@drawable/maincolor_border"
         android:orientation="vertical"
-        android:weightSum="5">
+        android:weightSum="6">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             android:id="@+id/colortable"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:orientation="vertical"
             android:layout_margin="3dp"
             android:stretchColumns="*">
@@ -73,13 +73,15 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ffbe0472" />
+                    android:background="#ffbe0472"
+                    android:layout_margin="1dp"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ffed008c" />
+                    android:background="#ffed008c"
+                    android:layout_margin="1dp"/>
             </TableRow>
 
             <TableRow
@@ -90,13 +92,15 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#fff94cb2" />
+                    android:background="#fff94cb2"
+                    android:layout_margin="1dp"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ff0154a4" />
+                    android:background="#ff0154a4"
+                    android:layout_margin="1dp"/>
             </TableRow>
 
             <TableRow
@@ -107,13 +111,15 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ff0083cb" />
+                    android:background="#ff0083cb"
+                    android:layout_margin="1dp"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ff19c1f2" />
+                    android:background="#ff19c1f2"
+                    android:layout_margin="1dp"/>
             </TableRow>
 
             <TableRow
@@ -124,13 +130,15 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ff4cb848" />
+                    android:background="#ff4cb848"
+                    android:layout_margin="1dp"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ffa3f345" />
+                    android:background="#ffa3f345"
+                    android:layout_margin="1dp"/>
             </TableRow>
 
             <TableRow
@@ -141,13 +149,15 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ffc4d72d" />
+                    android:background="#ffc4d72d"
+                    android:layout_margin="1dp"/>
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#ffff7e00" />
+                    android:background="#ffff7e00"
+                    android:layout_margin="1dp"/>
             </TableRow>
         </TableLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -161,8 +171,14 @@
         <uk.co.senab.photoview.ColourImageView
             android:id="@+id/color_image_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/my_image"></uk.co.senab.photoview.ColourImageView>
+            android:layout_height="match_parent"></uk.co.senab.photoview.ColourImageView>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
     </FrameLayout>
 
     <include

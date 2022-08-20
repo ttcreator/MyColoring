@@ -3,32 +3,59 @@ package com.example.mycoloring;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.example.mycoloring.utill.ImageLoaderUtill;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpEntity;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpGet;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.DefaultHttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.HttpClientBuilder;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -39,26 +66,75 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class ColoringActivity extends AppCompatActivity implements View.OnClickListener {
 
-    PhotoViewAttacher photoViewAttacher;
-    Bitmap bitmap;
-    TableLayout colorTable;
-    ColourImageView colourImageView;
-    ImageView currentColor, cColor1, cColor2, cColor3;
-    int colorId;
-    ImageButton buttonPickColor, undo, redo, clearAll, save;
-    TableLayout tableColor;
+    private PhotoViewAttacher photoViewAttacher;
+    //private Bitmap bitmap;
+    private TableLayout colorTable;
+    private ColourImageView colourImageView = null;
+    private ImageView currentColor, cColor1, cColor2, cColor3;
+    private int colorId;
+    private ImageButton buttonPickColor, undo, redo, clearAll, save;
+    private TableLayout tableColor;
     private Bitmap cachedBitmap;
-    File file;
+    private boolean fromSdCard;
+    private String imgUrls, nameImages;
+    private ProgressBar progressBar;
+    private Bitmap startBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coloring);
 
-        Log.v("lifeCycle", "onCreate()");
+        Intent intent = getIntent();
+        imgUrls = intent.getStringExtra("urlImagePosition");
+        nameImages = intent.getStringExtra("nameImage");
 
+        checkSdCard();
+        initImageLoader(this);
         initViews();
         addEvent();
+
+        if (cachedBitmap == null) {
+
+            LoadAsyncBitmap loadAsyncBitmap = new LoadAsyncBitmap(colourImageView, imgUrls);
+            Thread loadThreadBitmap = new Thread(loadAsyncBitmap);
+            loadThreadBitmap.start();
+            try {
+                loadThreadBitmap.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            cachedBitmap = loadAsyncBitmap.getBtmImage();
+            loadAsyncBitmap.showLagreImageAsynWithNoCacheOpen(colourImageView, imgUrls, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    photoViewAttacher = new PhotoViewAttacher(colourImageView, cachedBitmap);
+                    if (cachedBitmap != null) {
+                        colourImageView.setImageBT(cachedBitmap);
+                    }
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
+        } else {
+            photoViewAttacher = new PhotoViewAttacher(colourImageView, cachedBitmap);
+            colourImageView.setImageBitmap(cachedBitmap);
+
+        }
     }
 
     private void initViews() {
@@ -74,15 +150,12 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         undo = (ImageButton) findViewById(R.id.undo_button);
         clearAll = (ImageButton) findViewById(R.id.clear_button);
         save = (ImageButton) findViewById(R.id.save_button);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
 
     }
 
     public void addEvent() {
-
-        bitmap = BitmapFactory.decodeResource(this.getResources(),
-                R.drawable.my_image);
-        photoViewAttacher = new PhotoViewAttacher(colourImageView, bitmap);
-
 
         undo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,21 +174,73 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setSavedBitmap(colourImageView.getmBitmap());
+                setSavedBitmap();
                 Toast.makeText(ColoringActivity.this, "You state image was saved",
                         Toast.LENGTH_LONG).show();
+            }
+        });
+
+        colourImageView.setOnRedoUndoListener(new ColourImageView.OnRedoUndoListener() {
+            @Override
+            public void onRedoUndo(int undoSize, int redoSize) {
+                if (undoSize != 0) {
+                    undo.setEnabled(true);
+                } else {
+                    undo.setEnabled(false);
+                }
+                if (redoSize != 0) {
+                    redo.setEnabled(true);
+                } else {
+                    redo.setEnabled(false);
+                }
             }
         });
 
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setMessage("All progress was delete, are you sure?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                colourImageView.setImageBT(bitmap);
+                                LoadAsyncBitmap loadAsyncBitmap = new LoadAsyncBitmap(colourImageView, imgUrls);
+                                Thread loadThreadBitmap = new Thread(loadAsyncBitmap);
+                                loadThreadBitmap.start();
+                                try {
+                                    loadThreadBitmap.join();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                startBitmap = loadAsyncBitmap.getBtmImage();
+                                colourImageView.setImageBitmap(startBitmap);
+                                loadAsyncBitmap.showLagreImageAsynWithNoCacheOpen(colourImageView, imgUrls, new ImageLoadingListener() {
+                                    @Override
+                                    public void onLoadingStarted(String imageUri, View view) {
+                                        progressBar.setVisibility(View.VISIBLE);
+                                    }
+
+                                    @Override
+                                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                                    }
+
+                                    @Override
+                                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                        photoViewAttacher = new PhotoViewAttacher(colourImageView, startBitmap);
+                                        if (startBitmap != null) {
+                                            colourImageView.setImageBT(startBitmap);
+                                        }
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+
+                                    @Override
+                                    public void onLoadingCancelled(String imageUri, View view) {
+
+                                    }
+                                });
                                 dialog.cancel();
+                                colourImageView.clearStack();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -186,6 +311,16 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    public static void initImageLoader(Context context) {
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .denyCacheImageMultipleSizesInMemory()
+                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
+                .diskCacheSize(100 * 1024 * 1024)
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .build();
+        ImageLoaderUtill.getInstance().init(config);
+    }
+
 
     View.OnClickListener checkCurrentColor = new View.OnClickListener() {
         @Override
@@ -228,69 +363,45 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         findViewById(view2).setBackgroundResource(R.drawable.set_color_default);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.v("lifeCycle", "onDestroy()");
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
         setSaveColor();
-        Log.v("lifeCycle", "onPause()");
-        setSavedBitmap(colourImageView.getmBitmap());
+        setSavedBitmap();
     }
 
-    private void setSavedBitmap(Bitmap finalBitmap) {
+    private void setSavedBitmap() {
+        SaveAsyncBitmap saveAsyncBitmap = new SaveAsyncBitmap();
+        if (fromSdCard) {
+            saveAsyncBitmap.inBackgroundSaveSD(colourImageView.getmBitmap(), getApplicationContext(),
+                    nameImages, nameImages);
+        } else {
+            saveAsyncBitmap.inBackgroundSaveLocal(colourImageView.getmBitmap(), getApplicationContext(),
+                    nameImages, nameImages);
+        }
+    }
 
-        file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                "savedBitmap1.png");
-        try {
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(file);
-                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            } finally {
-                if (fos != null) fos.close();
+    @Override
+    public void onBackPressed() {
+        setSavedBitmap();
+        super.onBackPressed();
+    }
+
+    private Bitmap getSavedBitmap() {
+        fromSdCard = false;
+        if (fromSdCard) {
+            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
+            if (cachedBitmap != null) {
+                colourImageView.setImageBitmap(cachedBitmap);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
+            if (cachedBitmap != null) {
+                colourImageView.setImageBitmap(cachedBitmap);
+            }
         }
-        SharedPreferencesFactory.saveString(this, "savedBitmap1", file.getPath());
-
-    }
-
-    private void getSavedBitmap() {
-        cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getString(this, "savedBitmap1"));
-        if (cachedBitmap != null) {
-            colourImageView.setImageBT(cachedBitmap);
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.v("lifeCycle", "onStart()");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.v("lifeCycle", "onStop()");
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        Log.v("lifeCycle", "onPostResume()");
-
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.v("lifeCycle", "onRestart()");
+        return cachedBitmap;
     }
 
     private void setSaveColor() {
@@ -310,5 +421,18 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         cColor3.setImageDrawable(new ColorDrawable(SharedPreferencesFactory.getInteger(this,
                 SharedPreferencesFactory.SavedColor3, getResources().getColor(R.color.white))));
     }
+
+    private boolean checkSdCard() {
+
+        Boolean isSDPresent = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+
+        if (isSDPresent) {
+            fromSdCard = true;
+        } else {
+            fromSdCard = false;
+        }
+        return fromSdCard;
+    }
+
 
 }
