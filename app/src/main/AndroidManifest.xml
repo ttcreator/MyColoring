@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.mycoloring">
+    package="com.ttcreator.mycoloring">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -20,11 +21,7 @@
         android:theme="@style/Theme.MyColoring"
         tools:targetApi="31">
         <activity
-            android:name=".ColoringActivity"
-            android:exported="false"
-            android:screenOrientation="user"/>
-        <activity
-            android:name=".MainActivity"
+            android:name=".SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +29,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AllFromCategory"
+            android:exported="false"
+            android:label="@string/title_activity_all_from_category"
+            android:theme="@style/Theme.MyColoring.NoActionBar" />
+        <activity
+            android:name=".ColoringActivity"
+            android:exported="false"
+            android:screenOrientation="user" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <provider
+            android:name=".data.MCContentProvider"
+            android:authorities="com.ttcreator.mycoloring"
+            android:exported="false" />
     </application>
 
 </manifest>
