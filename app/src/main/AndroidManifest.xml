@@ -21,6 +21,10 @@
         android:theme="@style/Theme.MyColoring"
         tools:targetApi="31">
         <activity
+            android:name=".SettingsColoringActivity"
+            android:exported="false"
+            android:label="Settings"/>
+        <activity
             android:name=".SplashScreenActivity"
             android:exported="true">
             <intent-filter>
@@ -32,15 +36,17 @@
         <activity
             android:name=".AllFromCategory"
             android:exported="false"
-            android:label="@string/title_activity_all_from_category"
+            android:label="All category"
             android:theme="@style/Theme.MyColoring.NoActionBar" />
         <activity
             android:name=".ColoringActivity"
             android:exported="false"
+            android:label="Coloring"
             android:screenOrientation="user" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="Coloring App"/>
 
         <provider
             android:name=".data.MCContentProvider"

@@ -3,7 +3,6 @@ package com.ttcreator.mycoloring.categoryFragment;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -24,10 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.ttcreator.mycoloring.OnCheckedChangeListener;
 import com.ttcreator.mycoloring.R;
 import com.ttcreator.mycoloring.adapters.RecyclerViewAdapter;
-import com.ttcreator.mycoloring.data.GetDataFromFirebase;
 import com.ttcreator.mycoloring.data.MCDBHelper;
 import com.ttcreator.mycoloring.data.MCDataContract;
 import com.ttcreator.mycoloring.model.CacheImageModel;
@@ -44,7 +41,7 @@ public class OldCategory extends Fragment {
     private String name;
     private String imageCategory;
     private String status;
-    private int keyImage;
+    private int keyImage, new_status, haveAds;
     private List<CacheImageModel> cacheImageModels;
 
     public static final String[] category = {"old"};
@@ -58,7 +55,7 @@ public class OldCategory extends Fragment {
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         dbHelper = new MCDBHelper(getContext());
         dbHelper = getDataFromFirebaseToSqlite("images");
-        cacheImageModels = dbHelper.getCacheImageByCategory(category);
+        cacheImageModels = dbHelper.getCacheImageByCategory(category, getContext());
         recyclerViewAdapter = new RecyclerViewAdapter(cacheImageModels, getContext());
         recyclerView.setAdapter(recyclerViewAdapter);
 
@@ -77,24 +74,35 @@ public class OldCategory extends Fragment {
                 if (cursorAllItem.getCount() == 0) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         imageUrl = dataSnapshot.child("imageUrl").getValue().toString().trim();
-                        name = dataSnapshot.child("name").getValue().toString().trim();
-                        imageCategory = dataSnapshot.child("category").getValue().toString().trim();
-                        status = dataSnapshot.child("status").getValue().toString().trim();
                         keyImage = Integer.parseInt(dataSnapshot.getKey());
+                        if (dataSnapshot.child("name").exists()) {
+                            name = dataSnapshot.child("name").getValue().toString().trim();
+                        }
+                        if (dataSnapshot.child("category").exists()) {
+                            imageCategory = dataSnapshot.child("category").getValue().toString().trim();
+                        }
+                        if (dataSnapshot.child("ads").exists()) {
+                            haveAds = Integer.parseInt(dataSnapshot.child("ads").getValue().toString().trim());
+                        } else {
+                            haveAds = 0;
+                        }
+                        new_status = 1;
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_URL, imageUrl);
                         contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_NAME, name);
                         contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY, imageCategory);
                         contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATUS, status);
                         contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_KEY, keyImage);
+                        contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, new_status);
+                        contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_ADS, haveAds);
                         ContentResolver contentResolver = getContext().getContentResolver();
                         Uri uri = contentResolver.insert(MCDataContract.CONTENT_URI, contentValues);
                         if (uri == null) {
                             Toast.makeText(getContext().getApplicationContext(),
                                     "Insertion of data in the table failed for " + uri, Toast.LENGTH_LONG);
                         } else {
-                            dbHelper = getDataFromFirebaseToSqlite("images");
-                            cacheImageModels = dbHelper.getCacheImageByCategory(category);
+                           // dbHelper = getDataFromFirebaseToSqlite("images");
+                            cacheImageModels = dbHelper.getCacheImageByCategory(category, getContext());
                             recyclerViewAdapter = new RecyclerViewAdapter(cacheImageModels, getContext());
                             recyclerView.setAdapter(recyclerViewAdapter);
                             recyclerViewAdapter.notifyDataSetChanged();
@@ -105,10 +113,19 @@ public class OldCategory extends Fragment {
                 } else {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         imageUrl = dataSnapshot.child("imageUrl").getValue().toString().trim();
-                        name = dataSnapshot.child("name").getValue().toString().trim();
-                        imageCategory = dataSnapshot.child("category").getValue().toString().trim();
-                        status = dataSnapshot.child("status").getValue().toString().trim();
                         keyImage = Integer.parseInt(dataSnapshot.getKey());
+                        if (dataSnapshot.child("name").exists()) {
+                            name = dataSnapshot.child("name").getValue().toString().trim();
+                        }
+                        if (dataSnapshot.child("category").exists()) {
+                            imageCategory = dataSnapshot.child("category").getValue().toString().trim();
+                        }
+                        if (dataSnapshot.child("ads").exists()) {
+                            haveAds = Integer.parseInt(dataSnapshot.child("ads").getValue().toString().trim());
+                        } else {
+                            haveAds = 0;
+                        }
+                        new_status = 1;
                         String[] projection = {MCDataContract.NewImages.MC_NEW_IMAGE_URL};
                         Cursor cursor = getContext().getContentResolver().query(
                                 MCDataContract.CONTENT_URI, projection, null, null,
@@ -129,14 +146,16 @@ public class OldCategory extends Fragment {
                             contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY, imageCategory);
                             contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATUS, status);
                             contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_KEY, keyImage);
+                            contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, new_status);
+                            contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_ADS, haveAds);
                             ContentResolver contentResolver = getContext().getContentResolver();
                             Uri uri = contentResolver.insert(MCDataContract.CONTENT_URI, contentValues);
                             if (uri == null) {
                                 Toast.makeText(getContext().getApplicationContext(),
                                         "Insertion of data in the table failed for " + uri, Toast.LENGTH_LONG);
                             } else {
-                                dbHelper = getDataFromFirebaseToSqlite("images");
-                                cacheImageModels = dbHelper.getCacheImageByCategory(category);
+                               // dbHelper = getDataFromFirebaseToSqlite("images");
+                                cacheImageModels = dbHelper.getCacheImageByCategory(category, getContext());
                                 recyclerViewAdapter = new RecyclerViewAdapter(cacheImageModels, getContext());
                                 recyclerView.setAdapter(recyclerViewAdapter);
                                 recyclerViewAdapter.notifyDataSetChanged();

@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.MyColoring" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">#494949</item>
+        <item name="colorPrimaryVariant">#030505</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -12,6 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay </item>
     </style>
 
     <style name="Theme.MyColoring.NoActionBar">
@@ -22,6 +24,18 @@
     <style name="Theme.MyColoring.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.MyColoring.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="DialogAnimationOpen">
+        <item name="android:windowEnterAnimation">@anim/animation_fragment_down_to_up</item>
+        <item name="android:windowMinWidthMajor">97%</item>
+        <item name="android:windowMinWidthMinor">97%</item>
+    </style>
+
+    <style name="DialogAnimationDismiss">
+        <item name="android:windowEnterAnimation">@anim/animation_fragment_down_to_up</item>
+        <item name="android:windowMinWidthMajor">97%</item>
+        <item name="android:windowMinWidthMinor">97%</item>
+    </style>
 
 
 </resources>

@@ -24,6 +24,8 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.VibrationEffect;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -486,6 +488,11 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
+        if (Build.VERSION.SDK_INT >= 30) {
+            VibrationEffect effect = VibrationEffect.startComposition()
+                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_LOW_TICK, 0.5f)
+                    .compose();
+        }
         boolean handled = false;
         if (mZoomEnabled && hasDrawable((ImageView) v)) {
             ViewParent parent = v.getParent();

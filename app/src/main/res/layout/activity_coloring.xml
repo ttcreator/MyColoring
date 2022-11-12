@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ttcreator.mycoloring.ColoringActivity"
-    android:background="@color/white">
+    android:background="#FFFFFF">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/bottomlay"

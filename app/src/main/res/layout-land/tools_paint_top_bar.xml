@@ -4,20 +4,22 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:id="@+id/top_paint_bar"
-    android:background="@color/grey">
+    android:weightSum="5">
+
     <LinearLayout
         android:id="@+id/layout_pick_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="10dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_weight="1">
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/button_pick_color"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="@drawable/pick_color"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/icons_menu_brush"
         android:layout_gravity="center"
         android:layout_margin="2dp"
        />
@@ -28,7 +30,7 @@
         android:text="Pick Color"
         android:layout_gravity="center"
         android:textColor="@color/black"
-        android:textSize="7sp">
+        android:textSize="10sp">
     </TextView>
     </LinearLayout>
 
@@ -38,13 +40,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="10dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_weight="1">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/undo_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/ic_baseline_undo_24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icons_menu_undo"
             android:gravity="center"
             android:layout_margin="2dp"
             />
@@ -55,7 +58,7 @@
             android:text="Undo"
             android:layout_gravity="center"
             android:textColor="@color/black"
-            android:textSize="7sp">
+            android:textSize="10sp">
         </TextView>
     </LinearLayout>
 
@@ -65,13 +68,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="10dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_weight="1">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/redo_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/ic_baseline_redo_24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icons_menu_redo"
             android:gravity="center"
             android:layout_margin="2dp"
             />
@@ -82,7 +86,7 @@
             android:text="Redo"
             android:layout_gravity="center"
             android:textColor="@color/black"
-            android:textSize="7sp">
+            android:textSize="10sp">
         </TextView>
     </LinearLayout>
 
@@ -92,13 +96,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="10dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_weight="1">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/save_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/ic_baseline_save_24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icons_menu_save_close"
             android:gravity="center"
             android:layout_margin="2dp"
             />
@@ -109,7 +114,7 @@
             android:text="Save"
             android:layout_gravity="center"
             android:textColor="@color/black"
-            android:textSize="7sp">
+            android:textSize="10sp">
         </TextView>
     </LinearLayout>
 
@@ -119,13 +124,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="10dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:layout_weight="1">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/clear_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/ic_baseline_clear_24"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/icons_menu_close"
             android:gravity="center"
             android:layout_margin="2dp"
             />
@@ -136,7 +142,7 @@
             android:text="Clear All"
             android:layout_gravity="center"
             android:textColor="@color/black"
-            android:textSize="7sp">
+            android:textSize="10sp">
         </TextView>
     </LinearLayout>
 

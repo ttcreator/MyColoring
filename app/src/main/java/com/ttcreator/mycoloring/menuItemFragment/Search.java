@@ -35,6 +35,7 @@ public class Search extends Fragment {
     private RecyclerView recyclerViewBest, recyclerViewOld, recyclerViewNew;
     private TextView textViewSeeMoreBest, textViewSeeMoreOld, textViewSeeMoreNew;
     private TextView textViewNameCategoryBest, textViewNameCategoryOld, textViewNameCategoryNew;
+    private TextView textCountImages3, textCountImages2, textCountImages;
     private SearchRecyclerAdapter recyclerViewAdapter;
 
     private List<CategoryItemModel> itemListCategoryBest,
@@ -59,6 +60,10 @@ public class Search extends Fragment {
         textViewNameCategoryNew = root.findViewById(R.id.textViewNameCategory3);
         recyclerViewNew = root.findViewById(R.id.recyclerViewNew);
 
+        textCountImages3 = root.findViewById(R.id.textCountImages3);
+        textCountImages2 = root.findViewById(R.id.textCountImages2);
+        textCountImages = root.findViewById(R.id.textCountImages);
+
         recyclerViewNew.setHasFixedSize(true);
         dbRef = FirebaseDatabase.getInstance().getReference();
 
@@ -71,21 +76,25 @@ public class Search extends Fragment {
 
     private void getDataFromDB() {
 
+        String titleBest = "Best images";
+
         textViewSeeMoreBest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), AllFromCategory.class);
                 intent.putExtra("nameCat", BestCategory.category[0]);
+                intent.putExtra("title", titleBest);
                 v.getContext().startActivity(intent);
             }
         });
-        textViewNameCategoryBest.setText(BestCategory.category[0]);
+        textViewNameCategoryBest.setText("Best images");
         ContentResolver contentResolver = getContext().getContentResolver();
         String[] projection = {
                 MCDataContract.NewImages.MC_NEW_IMAGE_URL,
                 MCDataContract.NewImages.MC_NEW_IMAGE_NAME,
                 MCDataContract.NewImages.MC_NEW_IMAGE_KEY,
-                MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY};
+                MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY,
+                MCDataContract.NewImages.MC_NEW_IMAGE_NEW_ADS};
         String selection = MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY + "=?";
         String[] selectionArgsBest = {BestCategory.category[0]};
         Cursor cursor = contentResolver.query(MCDataContract.CONTENT_URI, projection, selection,
@@ -94,6 +103,7 @@ public class Search extends Fragment {
         int columnIndexName = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_NAME);
         int columnIndexKey = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_KEY);
         int columnIndexCategory = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY);
+        int columnIndexHaveAds = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_ADS);
         if (cursor.moveToNext())
             do {
                 CategoryItemModel categoryItemModel = new CategoryItemModel();
@@ -101,8 +111,10 @@ public class Search extends Fragment {
                 categoryItemModel.setName(cursor.getString(columnIndexName));
                 categoryItemModel.setimgKey(cursor.getInt(columnIndexKey));
                 categoryItemModel.setCategory(cursor.getString(columnIndexCategory));
+                categoryItemModel.setHaveAds(cursor.getInt(columnIndexHaveAds));
                 itemListCategoryBest.add(categoryItemModel);
             } while (cursor.moveToNext());
+        textCountImages.setText(String.valueOf(cursor.getCount()));
         recyclerViewAdapter = new SearchRecyclerAdapter(itemListCategoryBest,
                 getContext(), BestCategory.category[0]);
         recyclerViewBest.setAdapter(recyclerViewAdapter);
@@ -111,15 +123,17 @@ public class Search extends Fragment {
         recyclerViewAdapter.notifyDataSetChanged();
         recyclerViewBest.setHasFixedSize(true);
 
+        String titleOld = "Old images";
         textViewSeeMoreOld.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), AllFromCategory.class);
                 intent.putExtra("nameCat", OldCategory.category[0]);
+                intent.putExtra("title", titleOld);
                 v.getContext().startActivity(intent);
             }
         });
-        textViewNameCategoryOld.setText(OldCategory.category[0]);
+        textViewNameCategoryOld.setText(titleOld);
         String[] selectionArgsOld = {OldCategory.category[0]};
         cursor = contentResolver.query(MCDataContract.CONTENT_URI, projection, selection,
                 selectionArgsOld, null);
@@ -130,8 +144,10 @@ public class Search extends Fragment {
                 categoryItemModel.setName(cursor.getString(columnIndexName));
                 categoryItemModel.setimgKey(cursor.getInt(columnIndexKey));
                 categoryItemModel.setCategory(cursor.getString(columnIndexCategory));
+                categoryItemModel.setHaveAds(cursor.getInt(columnIndexHaveAds));
                 itemListCategoryOld.add(categoryItemModel);
             } while (cursor.moveToNext());
+        textCountImages2.setText(String.valueOf(cursor.getCount()));
         recyclerViewAdapter = new SearchRecyclerAdapter(itemListCategoryOld,
                 getContext(), OldCategory.category[0]);
         recyclerViewOld.setAdapter(recyclerViewAdapter);
@@ -140,15 +156,17 @@ public class Search extends Fragment {
         recyclerViewAdapter.notifyDataSetChanged();
         recyclerViewOld.setHasFixedSize(true);
 
+        String titleNew = "New images";
         textViewSeeMoreNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), AllFromCategory.class);
                 intent.putExtra("nameCat", NewCategory.category[0]);
+                intent.putExtra("title", titleNew);
                 v.getContext().startActivity(intent);
             }
         });
-        textViewNameCategoryNew.setText(NewCategory.category[0]);
+        textViewNameCategoryNew.setText(titleNew);
         String[] selectionArgsNew = {NewCategory.category[0]};
         cursor = contentResolver.query(MCDataContract.CONTENT_URI, projection, selection,
                 selectionArgsNew, null);
@@ -159,8 +177,10 @@ public class Search extends Fragment {
                 categoryItemModel.setName(cursor.getString(columnIndexName));
                 categoryItemModel.setimgKey(cursor.getInt(columnIndexKey));
                 categoryItemModel.setCategory(cursor.getString(columnIndexCategory));
+                categoryItemModel.setHaveAds(cursor.getInt(columnIndexHaveAds));
                 itemListCategoryNew.add(categoryItemModel);
             } while (cursor.moveToNext());
+        textCountImages3.setText(String.valueOf(cursor.getCount()));
         recyclerViewAdapter = new SearchRecyclerAdapter(itemListCategoryNew,
                 getContext(), NewCategory.category[0]);
         recyclerViewNew.setAdapter(recyclerViewAdapter);
@@ -169,91 +189,6 @@ public class Search extends Fragment {
         recyclerViewAdapter.notifyDataSetChanged();
         recyclerViewNew.setHasFixedSize(true);
 
-//        Query query = dbRef.child("images");
-//
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                    CategoryItemModel categoryItemModel = new CategoryItemModel();
-//                    String nameCategory = dataSnapshot.child("category").getValue().toString();
-//                    if (nameCategory.equals("best")) {
-//                        textViewSeeMore.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Intent intent = new Intent(v.getContext(), AllFromCategory.class);
-//                                intent.putExtra("nameCat", nameCategory);
-//                                v.getContext().startActivity(intent);
-//                            }
-//                        });
-//                        textViewNameCategory.setText(dataSnapshot.child("category")
-//                                .getValue().toString());
-//                        categoryItemModel.setImgUrl(dataSnapshot.child("imageUrl")
-//                                .getValue().toString());
-//                        categoryItemModel.setName(dataSnapshot.child("name")
-//                                .getValue().toString());
-//                        categoryItemModel.setCategory(dataSnapshot.child("category")
-//                                .getValue().toString());
-//                        itemListCategory.add(categoryItemModel);
-//                        recyclerViewAdapter = new SearchRecyclerAdapter(itemListCategory,
-//                                getContext(), "best");
-//                        recyclerView.setAdapter(recyclerViewAdapter);
-//                        recyclerViewAdapter.notifyDataSetChanged();
-////                    } else if (dataSnapshot.child("category").getValue().toString().equals("old")) {
-////                        textViewSeeMoreOld.setOnClickListener(new View.OnClickListener() {
-////                            @Override
-////                            public void onClick(View v) {
-////                                Intent intent = new Intent(v.getContext(), AllFromCategory.class);
-////                                intent.putExtra("nameCat", nameCategory);
-////                                v.getContext().startActivity(intent);
-////                            }
-////                        });
-////                        textViewNameCategoryOld.setText(dataSnapshot.child("category")
-////                                .getValue().toString());
-////                        categoryItemModel.setImgUrl(dataSnapshot.child("imageUrl")
-////                                .getValue().toString());
-////                        categoryItemModel.setName(dataSnapshot.child("name")
-////                                .getValue().toString());
-////                        categoryItemModel.setCategory(dataSnapshot.child("category")
-////                                .getValue().toString());
-////                        itemListCategoryOld.add(categoryItemModel);
-////                        recyclerViewAdapterSearch = new SearchRecyclerAdapter(itemListCategoryOld,
-////                                getContext(), "old");
-////                        recyclerViewOld.setAdapter(recyclerViewAdapterSearch);
-////                        recyclerViewAdapterSearch.notifyDataSetChanged();
-////                    } else if (dataSnapshot.child("category").getValue().toString().equals("new")) {
-////                        textViewSeeMoreNew.setOnClickListener(new View.OnClickListener() {
-////                            @Override
-////                            public void onClick(View v) {
-////                                Intent intent = new Intent(v.getContext(), AllFromCategory.class);
-////                                intent.putExtra("nameCat", nameCategory);
-////                                v.getContext().startActivity(intent);
-////                            }
-////                        });
-////                        textViewNameCategoryNew.setText(dataSnapshot.child("category")
-////                                .getValue().toString());
-////                        categoryItemModel.setImgUrl(dataSnapshot.child("imageUrl")
-////                                .getValue().toString());
-////                        categoryItemModel.setName(dataSnapshot.child("name")
-////                                .getValue().toString());
-////                        categoryItemModel.setCategory(dataSnapshot.child("category")
-////                                .getValue().toString());
-////                        itemListCategoryNew.add(categoryItemModel);
-////                        recyclerViewAdapterSearch = new SearchRecyclerAdapter(itemListCategoryNew,
-////                                getContext(), "new");
-////                        recyclerViewNew.setAdapter(recyclerViewAdapterSearch);
-////                        recyclerViewAdapterSearch.notifyDataSetChanged();
-//                    }
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
     }
 
 }

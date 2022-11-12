@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.ttcreator.mycoloring.R;
 import com.ttcreator.mycoloring.data.GetDataFromFirebase;
@@ -15,6 +16,8 @@ import com.ttcreator.mycoloring.menuItemFragment.MyGalery;
 import com.ttcreator.mycoloring.menuItemFragment.Search;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportActionBar().hide();
 
         bottomNavigationView = findViewById(R.id.bottom_menu);
         bottomNavigationView.setOnItemSelectedListener(this);

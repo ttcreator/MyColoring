@@ -363,6 +363,19 @@ public class ColourImageView extends ImageView {
         return false;
     }
 
+    public boolean bmstackIsNull () {
+        boolean bmstackIsNull = false;
+
+        if (bmstackundo.size() != 0 || bmstackredo.size() != 0){
+            bmstackIsNull = true;
+            return bmstackIsNull;
+        } else {
+            bmstackIsNull = false;
+            return bmstackIsNull;
+        }
+    }
+
+
     /**
      * @return true: has element ,can redo;
      */
@@ -399,7 +412,7 @@ public class ColourImageView extends ImageView {
         bmstackredo.clear();
         bmstackundo.clear();
         onRedoUndoListener.onRedoUndo(bmstackundo.size(), bmstackredo.size());
-        mBitmap = null;
+//        mBitmap = null;
     }
 
     public Model getModel() {

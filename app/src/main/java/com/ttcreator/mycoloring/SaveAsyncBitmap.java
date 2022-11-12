@@ -36,7 +36,7 @@ public class SaveAsyncBitmap extends Thread {
             fos.close();
             SharedPreferencesFactory.saveStringUrl(context.getApplicationContext(), key,
                     appSpecificExternalDir.getPath());
-            return "SUCCESS";
+            return appSpecificExternalDir.getPath();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -58,8 +58,6 @@ public class SaveAsyncBitmap extends Thread {
             fos.close();
             SharedPreferencesFactory.saveStringUrl(context.getApplicationContext(), key,
                     mypath.getPath());
-
-            Toast.makeText(context, mypath.getPath(), Toast.LENGTH_LONG).show();
             return mypath.getPath();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

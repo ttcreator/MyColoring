@@ -1,5 +1,6 @@
 package com.ttcreator.mycoloring;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,12 +9,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -28,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.ttcreator.mycoloring.R;
 import com.ttcreator.mycoloring.data.MCDBHelper;
 import com.ttcreator.mycoloring.data.MCDataContract;
+import com.ttcreator.mycoloring.model.CacheImageModel;
 import com.ttcreator.mycoloring.utill.ImageLoaderUtill;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -51,26 +58,31 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     private TableLayout tableColor;
     private Bitmap cachedBitmap;
     private boolean fromSdCard;
-    private String imgUrls, nameImages, category;
+    private String imgUrls, nameImages, category, stateUrl;
     private int imageKey;
     private ProgressBar progressBar;
     private Bitmap startBitmap;
     private Uri contentUri;
-
-    public static String STATUS_IN_PROGRESS = "inProgress";
-    public static String STATUS_CLEAR = "clear";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coloring);
 
+        getSupportActionBar().hide();
+
         Intent intent = getIntent();
         imgUrls = intent.getStringExtra("urlImagePosition");
         nameImages = intent.getStringExtra("nameImage");
         imageKey = intent.getIntExtra("keyPosition", 0);
         category = intent.getStringExtra("categoryPosition");
+        stateUrl = intent.getStringExtra("statePosition");
         contentUri = intent.getData();
+
+        ContentResolver contentResolver = getContentResolver();
+        ContentValues cv = new ContentValues();
+        cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, "0");
+        contentResolver.update(contentUri, cv, MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, null);
 
 
         checkSdCard();
@@ -105,6 +117,7 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
                     photoViewAttacher = new PhotoViewAttacher(colourImageView, cachedBitmap);
                     if (cachedBitmap != null) {
                         colourImageView.setImageBT(cachedBitmap);
+                        colourImageView.clearStack();
                     }
                     progressBar.setVisibility(View.GONE);
                 }
@@ -159,8 +172,6 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View v) {
                 String path = setSavedBitmap();
-                MCDBHelper mcdbHelper = new MCDBHelper(getApplicationContext());
-                mcdbHelper.getAllRows(MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME);
                 Toast.makeText(ColoringActivity.this,
                         "You state image was saved in: " + path, Toast.LENGTH_LONG).show();
             }
@@ -169,35 +180,30 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         colourImageView.setOnRedoUndoListener(new ColourImageView.OnRedoUndoListener() {
             @Override
             public void onRedoUndo(int undoSize, int redoSize) {
+                ContentResolver contentResolver = getContentResolver();
                 if (undoSize != 0) {
-//                    String[] urls = {imgUrls};
-//                    ContentValues contentValues = new ContentValues();
-//                    contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATUS, STATUS_IN_PROGRESS);
-//                    ContentResolver contentResolver = getApplicationContext().getContentResolver();
-//                    contentResolver.update(contentUri,
-//                            contentValues, MCDataContract.NewImages.MC_NEW_IMAGE_URL,
-//                            urls);
-//                    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("images");
-//                    dbRef.child(String.valueOf(imageKey)).child("status").setValue(STATUS_IN_PROGRESS);
                     undo.setEnabled(true);
                 } else {
-//                    String[] urls = {imgUrls};
-//                    ContentValues contentValues = new ContentValues();
-//                    contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATUS, STATUS_CLEAR);
-//                    ContentResolver contentResolver = getApplicationContext().getContentResolver();
-//                    contentResolver.update(contentUri,
-//                            contentValues, MCDataContract.NewImages.MC_NEW_IMAGE_URL,
-//                            urls);
-//                    MCDBHelper mcdbHelper = new MCDBHelper(getApplicationContext());
-//                    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("images");
-//                    dbRef.child(String.valueOf(imageKey)).child("status").setValue(STATUS_CLEAR);
                     undo.setEnabled(false);
-                    //mcdbHelper.getAllRows(MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME);
                 }
                 if (redoSize != 0) {
                     redo.setEnabled(true);
                 } else {
                     redo.setEnabled(false);
+                }
+                if (undoSize != 0 || redoSize != 0) {
+                    ContentValues cv = new ContentValues();
+                    cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATE, stateUrl);
+                    contentResolver.update(contentUri, cv, MCDataContract.NewImages.MC_NEW_IMAGE_STATE,
+                            null);
+                }
+                if (redoSize == 0 && undoSize == 0) {
+                    ContentValues cv = new ContentValues();
+                    cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
+                    contentResolver.update(contentUri, cv,
+                            MCDataContract.NewImages.MC_NEW_IMAGE_STATE, null);
+                    MCDBHelper mcdbHelper = new MCDBHelper(getApplicationContext());
+                    mcdbHelper.getAllRows(MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME);
                 }
             }
         });
@@ -219,8 +225,7 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
                                     e.printStackTrace();
                                 }
                                 startBitmap = loadAsyncBitmap.getBtmImage();
-                                colourImageView.setImageBitmap(startBitmap);
-                                colourImageView.clearStack();
+//                                colourImageView.setImageBitmap(startBitmap);
                                 loadAsyncBitmap.showLagreImageAsynWithNoCacheOpen(colourImageView, imgUrls,
                                         new ImageLoadingListener() {
                                             @Override
@@ -238,22 +243,18 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
                                                 photoViewAttacher = new PhotoViewAttacher(colourImageView, startBitmap);
                                                 if (startBitmap != null) {
                                                     colourImageView.setImageBT(startBitmap);
+                                                    colourImageView.clearStack();
+
                                                 }
                                                 progressBar.setVisibility(View.GONE);
-//                                                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("images");
-//                                                dbRef.child(imageKey).child("status").setValue(STATUS_CLEAR);
-//                                                ContentResolver contentResolver = getContentResolver();
-//                                                String[] selectionArgs = {imgUrls};
-//                                        contentResolver.delete(contentUri, MCDataContract.NewImages.MC_NEW_IMAGE_STATE,
-//                                              selectionArgs);
                                             }
 
                                             @Override
                                             public void onLoadingCancelled(String imageUri, View view) {
-
                                             }
                                         });
                                 dialog.cancel();
+
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -376,33 +377,49 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     protected void onPause() {
         super.onPause();
         setSaveColor();
-        setSavedBitmap();
+       // setSavedBitmap();
     }
 
     private String setSavedBitmap() {
+        String path = null;
         SaveAsyncBitmap saveAsyncBitmap = new SaveAsyncBitmap();
-        if (fromSdCard) {
-            String pathFromSD = saveAsyncBitmap.inBackgroundSaveSD(colourImageView.getmBitmap(), getApplicationContext(),
-                    nameImages, nameImages);
-            String[] selectionArgs = {imgUrls};
-            ContentResolver contentResolver = getContentResolver();
-            ContentValues cv = new ContentValues();
-            cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATE, pathFromSD);
-            contentResolver.update(contentUri,
-                    cv, MCDataContract.NewImages.MC_NEW_IMAGE_URL,
-                    selectionArgs);
-            return pathFromSD;
+
+        if (colourImageView != null && colourImageView.bmstackIsNull() == true) {
+            if (fromSdCard) {
+                String pathFromSD = saveAsyncBitmap.inBackgroundSaveSD(colourImageView.getmBitmap(), getApplicationContext(),
+                        nameImages, nameImages);
+                String[] selectionArgs = {imgUrls};
+                ContentResolver contentResolver = getContentResolver();
+                ContentValues cv = new ContentValues();
+                cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATE, pathFromSD);
+                contentResolver.update(contentUri,
+                        cv, MCDataContract.NewImages.MC_NEW_IMAGE_URL,
+                        selectionArgs);
+                path = pathFromSD;
+            } else {
+                String pathFromLocal = saveAsyncBitmap.inBackgroundSaveLocal(colourImageView.getmBitmap(), getApplicationContext(),
+                        nameImages, nameImages);
+                ContentResolver contentResolver = getContentResolver();
+                ContentValues cv = new ContentValues();
+                cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATE, pathFromLocal);
+                contentResolver.update(contentUri,
+                        cv, null,
+                        null);
+                path = pathFromLocal;
+            }
         } else {
-            String pathFromLocal = saveAsyncBitmap.inBackgroundSaveLocal(colourImageView.getmBitmap(), getApplicationContext(),
-                    nameImages, nameImages);
-            ContentResolver contentResolver = getContentResolver();
-            ContentValues cv = new ContentValues();
-            cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_STATE, pathFromLocal);
-            contentResolver.update(contentUri,
-                    cv, null,
-                    null);
-            return pathFromLocal;
+            if (fromSdCard) {
+                String pathFromSD = saveAsyncBitmap.inBackgroundSaveSD(colourImageView.getmBitmap(), getApplicationContext(),
+                        nameImages, nameImages);
+                path = pathFromSD;
+            } else {
+                String pathFromLocal = saveAsyncBitmap.inBackgroundSaveLocal(colourImageView.getmBitmap(), getApplicationContext(),
+                        nameImages, nameImages);
+                path = pathFromLocal;
+            }
+
         }
+        return path;
     }
 
     @Override
@@ -412,19 +429,50 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private Bitmap getSavedBitmap() {
-        fromSdCard = false;
+
+        ContentResolver contentResolver = getContentResolver();
+
+        checkSdCard();
         if (fromSdCard) {
-            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
-            if (cachedBitmap != null) {
-                colourImageView.setImageBitmap(cachedBitmap);
+            String[] projection = {MCDataContract.NewImages.MC_NEW_IMAGE_STATE};
+            Cursor cursor = contentResolver.query(contentUri, projection,
+                    null, null, null);
+            int colunmIndexState = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
+            String stateFromDB = null;
+            while (cursor.moveToNext()) {
+                stateFromDB = cursor.getString(colunmIndexState);
             }
+            if (stateFromDB != null) {
+                cachedBitmap = BitmapFactory.decodeFile(stateFromDB);
+                colourImageView.setImageBitmap(cachedBitmap);
+                return cachedBitmap;
+            } else {
+                return null;
+            }
+//            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
+//            if (cachedBitmap != null) {
+//                colourImageView.setImageBitmap(cachedBitmap);
+//            }
         } else {
-            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
-            if (cachedBitmap != null) {
+
+            String[] projection = {MCDataContract.NewImages.MC_NEW_IMAGE_STATE};
+            Cursor cursor = contentResolver.query(contentUri, projection,
+                    null, null, null);
+            int colunmIndexState = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
+            String stateFromDB = cursor.getString(colunmIndexState);
+            if (stateFromDB != null) {
+                cachedBitmap = BitmapFactory.decodeFile(stateFromDB);
                 colourImageView.setImageBitmap(cachedBitmap);
+                return cachedBitmap;
+            } else {
+                return null;
             }
+
+//            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
+//            if (cachedBitmap != null) {
+//                colourImageView.setImageBitmap(cachedBitmap);
+//            }
         }
-        return cachedBitmap;
     }
 
     private void setSaveColor() {
@@ -462,4 +510,24 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.top_menu_setting, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent openSettings = new Intent(this, SettingsColoringActivity.class);
+            startActivity(openSettings);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }

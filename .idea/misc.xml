@@ -3,15 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/button_bg_radius_dark_red.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/button_bg_radius_green.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/checked_drawline.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/checked_gradual.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/checked_pickcolor.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.105" />
         <entry key="app/src/main/res/drawable/ic_baseline_redo_24.xml" value="0.115" />
         <entry key="app/src/main/res/drawable/ic_baseline_undo_24.xml" value="0.105" />
+        <entry key="app/src/main/res/drawable/layout_bg_images_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/layout_bg_light_green.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/layout_bg_light_grey.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/layout_bg_radius.xml" value="0.109" />
+        <entry key="app/src/main/res/drawable/layout_bg_radius_dialog_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/layout_black_border_1dp.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/loadinganimation.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/main_bg.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/maincolor_border.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/my_draw_item_menu.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/set_color_default.xml" value="0.108" />
         <entry key="app/src/main/res/drawable/set_color_selector.xml" value="0.108" />
         <entry key="app/src/main/res/drawable/set_color_setected.xml" value="0.108" />
@@ -24,6 +33,8 @@
         <entry key="app/src/main/res/layout/activity_all_from_category.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_coloring.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.125" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.18125" />
+        <entry key="app/src/main/res/layout/activity_settings_coloring.xml" value="0.18229166666666666" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.184375" />
         <entry key="app/src/main/res/layout/category_recycler_item.xml" value="0.125" />
         <entry key="app/src/main/res/layout/dialog_blank.xml" value="0.335" />
@@ -34,18 +45,22 @@
         <entry key="app/src/main/res/layout/fragment_category1.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_category2.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_category3.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_my_drawing.xml" value="0.125" />
+        <entry key="app/src/main/res/layout/fragment_menu_dialog.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_my_drawing.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_my_galery.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_new_category.xml" value="0.184375" />
         <entry key="app/src/main/res/layout/fragment_old_category.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_three.xml" value="0.184375" />
+        <entry key="app/src/main/res/layout/menu_dialog_fragment_popup.xml" value="0.1" />
         <entry key="app/src/main/res/layout/paint_tools.xml" value="0.18333333333333332" />
         <entry key="app/src/main/res/layout/progress_dialog.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.125" />
+        <entry key="app/src/main/res/layout/recycler_view_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/tools_paint_top_bar.xml" value="0.25" />
         <entry key="app/src/main/res/layout/view_colorpicker.xml" value="0.10052083333333334" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.18333333333333332" />
+        <entry key="app/src/main/res/menu/top_menu_setting.xml" value="0.18125" />
+        <entry key="app/src/main/res/xml/coloring_preferences.xml" value="0.1" />
       </map>
     </option>
   </component>

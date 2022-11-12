@@ -10,127 +10,214 @@
         android:layout_height="wrap_content"
         android:fillViewport="true">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <RelativeLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/bestCagegory">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:id="@+id/textViewNameCategory"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:textStyle="bold"
-                android:textSize="16sp">
-            </TextView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:id="@+id/textViewSeeMore"
-                android:text="See more.."
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="5dp">
-            </TextView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_margin="10dp"
+            <RelativeLayout
+                android:id="@+id/bestCagegory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/textViewSeeMore"
-                android:id="@+id/recyclerViewBest">
-            </androidx.recyclerview.widget.RecyclerView>
-    </RelativeLayout>
+                android:orientation="horizontal">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/bestCagegory"
-        android:layout_marginTop="10dp"
-        android:id="@+id/oldCategory"
-        >
+                <TextView
+                    android:id="@+id/textViewNameCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#376335"
+                    android:textSize="24sp"
+                    android:textStyle="bold"></TextView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/textViewNameCategory2"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:textStyle="bold"
-            android:textSize="16sp">
-        </TextView>
+                <RelativeLayout
+                    android:id="@+id/linearLayoutIconImages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/textViewNameCategory"
+                    android:background="@drawable/layout_bg_light_grey"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="7dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:id="@+id/textViewSeeMore2"
-            android:text="See more.."
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="5dp">
-        </TextView>
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iconImages"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="3dp"
+                        android:src="@drawable/icon_images_small" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_margin="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@+id/textViewSeeMore2"
-            android:id="@+id/recyclerViewOld">
-        </androidx.recyclerview.widget.RecyclerView>
-    </RelativeLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textCountImages"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="3dp"
+                        android:layout_toRightOf="@id/iconImages"
+                        android:textColor="#EA8A42"
+                        android:textSize="10dp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_below="@id/oldCategory"
-            android:layout_marginTop="10dp"
-            android:id="@+id/newCagegory"
-            >
+                <TextView
+                    android:id="@+id/textViewSeeMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:text="See more.."></TextView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:id="@+id/textViewNameCategory3"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:textStyle="bold"
-                android:textSize="16sp">
-            </TextView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewBest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textViewSeeMore"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
+            </RelativeLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:id="@+id/textViewSeeMore3"
-                android:text="See more.."
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="5dp">
-            </TextView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_margin="10dp"
+            <RelativeLayout
+                android:id="@+id/oldCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/bestCagegory"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewNameCategory2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#376335"
+                    android:textSize="24sp"
+                    android:textStyle="bold"></TextView>
+
+                <RelativeLayout
+                    android:id="@+id/linearLayoutIconImages2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/textViewNameCategory2"
+                    android:background="@drawable/layout_bg_light_grey"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="7dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iconImages2"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="3dp"
+                        android:src="@drawable/icon_images_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textCountImages2"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="3dp"
+                        android:layout_toRightOf="@id/iconImages2"
+                        android:textColor="#EA8A42"
+                        android:textSize="10dp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textViewSeeMore2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:text="See more.."></TextView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewOld"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textViewSeeMore2"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/newCagegory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/oldCategory"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/button_bg_radius_dark_green"
                 android:orientation="horizontal"
-                android:layout_below="@+id/textViewSeeMore3"
-                android:id="@+id/recyclerViewNew">
-            </androidx.recyclerview.widget.RecyclerView>
-        </RelativeLayout>
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                >
+
+                <TextView
+                    android:id="@+id/textViewNameCategory3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"></TextView>
+
+                <RelativeLayout
+                    android:id="@+id/linearLayoutIconImages3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/textViewNameCategory3"
+                    android:background="@drawable/layout_bg_light_green"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="7dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iconImages3"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="3dp"
+                        android:src="@drawable/icon_images_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textCountImages3"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="3dp"
+                        android:layout_toRightOf="@id/iconImages3"
+                        android:textColor="#EA8A42"
+                        android:textSize="10dp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/textViewSeeMore3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:text="See more.."
+                    android:textColor="@color/light_grey"></TextView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewNew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textViewSeeMore3"
+                    android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
+            </RelativeLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 </FrameLayout>

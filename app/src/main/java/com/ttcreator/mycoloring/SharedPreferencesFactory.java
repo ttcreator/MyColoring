@@ -9,6 +9,7 @@ public class SharedPreferencesFactory {
     public static final String SavedColor1 = "saved_color1";
     public static final String SavedColor2 = "saved_color2";
     public static final String SavedColor3 = "saved_color3";
+    public static final String StackSize = "stack_max_size";
 
     public static int getInteger(Context context, String key, Integer def) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Name, Context.MODE_PRIVATE);
@@ -21,6 +22,7 @@ public class SharedPreferencesFactory {
         editor.putInt(key, value);
         editor.commit();
     }
+
 
     public static void saveStringUrl (Context context, String key, String url) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(Name, Context.MODE_PRIVATE);

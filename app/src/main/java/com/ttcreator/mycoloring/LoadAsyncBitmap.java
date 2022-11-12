@@ -23,6 +23,9 @@ public class LoadAsyncBitmap implements Runnable {
     Bitmap image;
     ColourImageView imageView;
 
+    LoadAsyncBitmap() {
+    }
+
     LoadAsyncBitmap(Context context, String urls) {
         this.urls = urls;
         this.context = context;
