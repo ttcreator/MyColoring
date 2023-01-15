@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentPurchaseDialog"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_bg_radius_dialog">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/closeButton"
+        android:backgroundTint="#31FFFFFF"
+        app:rippleColor="@null"
+        android:outlineProvider="none"
+        app:backgroundTint="@null"
+        app:fabSize="mini"
+        app:pressedTranslationZ="0dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/close_icon"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Disable Ads. Make purchase"
+        android:layout_marginTop="50dp"
+        android:textSize="28sp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/tittleText"
+        />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/bgReasonsPurchase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tittleText"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icons_disable_ads"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/iconDisableAds"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/disableAdsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full disable ads"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"/>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_secret_item"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/iconSecretItem"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/secretItemText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get all secret items"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_unblock_video"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/iconUnblockVideo"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/unblockViewText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unblock all vieo/gif coloring items"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bgReasonsPurchase"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Choose you plan:"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/oneWeekPurchaseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/layout_style_button_purchase"
+            android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/oneMonthPurchaseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/oneWeekPurchaseButton"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/layout_style_button_purchase"
+            android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/oneYearPurchaseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/oneMonthPurchaseButton"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/layout_style_button_purchase"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:text="You will be automatically charged for each renewal period." />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>

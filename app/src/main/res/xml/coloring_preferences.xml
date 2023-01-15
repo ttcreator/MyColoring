@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        android:title="Delete all my images."
+        android:key="clearMyImages"
+        android:summary="Everything you color in will be permanently deleted."
+        android:icon="@drawable/icon_bucket"
+        />
+
+    <CheckBoxPreference
+        android:title="Set tick effect (vibration)"
+        android:key="setVibration"
+        android:defaultValue="true"
+        android:summaryOff="Tick effect disable."
+        android:summaryOn="Tick effect enable."
+        android:icon="@drawable/icon_haptic"/>
+
+    <SeekBarPreference
+        android:title="Set on max stack size."
+        android:key="seekBarMaxSize"
+        app:adjustable="true"
+        app:showSeekBarValue="true"
+        android:icon="@drawable/icon_count_steps"
+        />
+
+    <Preference
+        android:title="Disable Ads"
+        android:key="disableAds"
+        android:summary="If you don't want to see ads, push this."
+        android:icon="@drawable/icon_no_ads_32x32"
+        />
+
+</PreferenceScreen>

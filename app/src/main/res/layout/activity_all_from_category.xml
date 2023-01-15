@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ttcreator.mycoloring.AllFromCategory">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/closeActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:backgroundTint="#31FFFFFF"
+        android:outlineProvider="none"
+        android:src="@drawable/close_icon"
+        app:backgroundTint="@null"
+        app:fabSize="mini"
+        app:pressedTranslationZ="0dp"
+        app:rippleColor="@null" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/topRelativeLayout"
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:id="@+id/imageViewBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/layout_black_border_1dp">
+
+        </ImageView>
+
+        <TextView
+            android:id="@+id/titleCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/imageViewBackground"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/descriptionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/titleCategory"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/imageViewBackground"
+            android:textColor="#939393"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/descriptionText"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/imageViewBackground"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iconImages"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_images_small" />
+
+            <TextView
+                android:id="@+id/textCountImagesFirst"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="3dp"
+                android:textColor="#EA8A42"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/devideView"
+        android:layout_margin="10dp"
+        android:layout_below="@id/topRelativeLayout"
+        android:background="@android:color/darker_gray" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAllCategory"
+        android:layout_below="@id/devideView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="10dp" />
+
+</RelativeLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentDialogFragmentLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_bg_radius2_dialog_fragment">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/closeButton"
+        android:backgroundTint="#31FFFFFF"
+        app:rippleColor="@null"
+        android:outlineProvider="none"
+        app:backgroundTint="@null"
+        app:fabSize="mini"
+        app:pressedTranslationZ="0dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/close_icon"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/imageView"
+        android:id="@+id/parentThreeButton"
+        android:layout_marginBottom="10dp"
+        android:weightSum="3">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonContinue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:textColor="@color/black"
+            android:background="@drawable/button_bg_radius_dark_green"
+            android:text="CONTINUE" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:textColor="@color/black"
+            android:background="@drawable/button_bg_radius_green"
+            android:text="RETRY" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
+            android:textColor="@color/black"
+            android:background="@drawable/button_bg_radius_dark_red"
+            android:text="DELETE" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>
