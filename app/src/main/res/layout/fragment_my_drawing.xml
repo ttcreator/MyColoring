@@ -12,16 +12,25 @@
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonClearAllImage"
-        android:background="@color/grey"
+        android:id="@+id/settingsButton"
+        android:background="@drawable/bg_black_stroke"
+        android:backgroundTint="#E28BC34A"
+        android:textColor="@color/white"
         android:layout_margin="10dp"/>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewNoPictires"
+            android:layout_above="@id/text"
+            android:layout_centerHorizontal="true"
+            />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/buttonClearAllImage"
+        android:layout_below="@+id/settingsButton"
         android:id="@+id/recyclerViewMyDrawing">
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -31,7 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textSize="20sp"
-        android:textColor="@color/black">
+        android:textColorLink="@drawable/link_selector"
+        android:layout_marginTop="10dp"
+        android:textColor="#B8B8B8">
     </TextView>
     </RelativeLayout>
 </FrameLayout>

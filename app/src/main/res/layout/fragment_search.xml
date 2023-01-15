@@ -16,34 +16,34 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/bestCagegory"
+                android:id="@+id/relativeCategory1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textViewNameCategory"
+                    android:id="@+id/textViewNameCategoryFirst"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="5dp"
                     android:textColor="#376335"
                     android:textSize="24sp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold"/>
 
                 <RelativeLayout
-                    android:id="@+id/linearLayoutIconImages"
+                    android:id="@+id/relativeLayoutIconImages1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/textViewNameCategory"
+                    android:layout_toEndOf="@+id/textViewNameCategoryFirst"
                     android:background="@drawable/layout_bg_light_grey"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp"
                     android:layout_marginStart="7dp">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/iconImages"
+                        android:id="@+id/iconImages1"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_margin="3dp"
@@ -52,57 +52,57 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textCountImages"
+                        android:id="@+id/textCountImagesFirst"
                         android:layout_centerInParent="true"
                         android:layout_margin="3dp"
-                        android:layout_toRightOf="@id/iconImages"
+                        android:layout_toEndOf="@id/iconImages1"
                         android:textColor="#EA8A42"
                         android:textSize="10dp"
                         android:textStyle="bold"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/textViewSeeMore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iconViewSeeMoreFirst"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:text="See more.."></TextView>
+                    android:src="@drawable/icon_see_more_green"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewBest"
+                    android:id="@+id/recyclerViewFirst"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textViewSeeMore"
+                    android:layout_below="@+id/relativeLayoutIconImages1"
                     android:layout_margin="10dp"
-                    android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
+                    android:orientation="horizontal"/>
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/oldCategory"
+                android:id="@+id/relativeCategory2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/bestCagegory"
+                android:layout_below="@id/relativeCategory1"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textViewNameCategory2"
+                    android:id="@+id/textViewNameCategorySecond"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="5dp"
                     android:textColor="#376335"
                     android:textSize="24sp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold"/>
 
                 <RelativeLayout
-                    android:id="@+id/linearLayoutIconImages2"
+                    android:id="@+id/relativeLayoutIconImages2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/textViewNameCategory2"
+                    android:layout_toEndOf="@+id/textViewNameCategorySecond"
                     android:background="@drawable/layout_bg_light_grey"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp"
@@ -118,65 +118,61 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textCountImages2"
+                        android:id="@+id/textCountImagesSecond"
                         android:layout_centerInParent="true"
                         android:layout_margin="3dp"
-                        android:layout_toRightOf="@id/iconImages2"
+                        android:layout_toEndOf="@id/iconImages2"
                         android:textColor="#EA8A42"
                         android:textSize="10dp"
                         android:textStyle="bold"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/textViewSeeMore2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iconViewSeeMoreSecond"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:text="See more.."></TextView>
+                    android:src="@drawable/icon_see_more_green"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewOld"
+                    android:id="@+id/recyclerViewSecond"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textViewSeeMore2"
+                    android:layout_below="@+id/relativeLayoutIconImages2"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
-                    android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
+                    android:orientation="horizontal"/>
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/newCagegory"
+                android:id="@+id/relativeCategory3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/oldCategory"
-                android:layout_marginStart="10dp"
+                android:layout_below="@id/relativeCategory2"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/button_bg_radius_dark_green"
-                android:orientation="horizontal"
-
-                >
+                android:background="@drawable/background_recycler_search_green"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textViewNameCategory3"
+                    android:id="@+id/textViewNameCategoryThird"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
                     android:textSize="24sp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold"/>
 
                 <RelativeLayout
-                    android:id="@+id/linearLayoutIconImages3"
+                    android:id="@+id/relativeLayoutIconImages3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/textViewNameCategory3"
+                    android:layout_toEndOf="@+id/textViewNameCategoryThird"
                     android:background="@drawable/layout_bg_light_green"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp"
@@ -192,32 +188,237 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/textCountImages3"
+                        android:id="@+id/textCountImagesThird"
                         android:layout_centerInParent="true"
                         android:layout_margin="3dp"
-                        android:layout_toRightOf="@id/iconImages3"
+                        android:layout_toEndOf="@id/iconImages3"
                         android:textColor="#EA8A42"
                         android:textSize="10dp"
                         android:textStyle="bold"/>
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/textViewSeeMore3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iconViewSeeMoreThird"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:text="See more.."
-                    android:textColor="@color/light_grey"></TextView>
+                    android:src="@drawable/icon_see_more_white"
+                    android:textColor="@color/light_grey"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewNew"
+                    android:id="@+id/recyclerViewThird"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textViewSeeMore3"
-                    android:orientation="horizontal"></androidx.recyclerview.widget.RecyclerView>
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@+id/relativeLayoutIconImages3"
+                    android:orientation="horizontal"/>
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeCategory4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relativeCategory3"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewNameCategoryFour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#376335"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutIconImages4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/textViewNameCategoryFour"
+                    android:background="@drawable/layout_bg_light_grey"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="7dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iconImages4"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="3dp"
+                        android:src="@drawable/icon_images_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textCountImagesFour"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="3dp"
+                        android:layout_toEndOf="@id/iconImages4"
+                        android:textColor="#EA8A42"
+                        android:textSize="10dp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iconViewSeeMoreFour"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:src="@drawable/icon_see_more_green"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewFour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relativeLayoutIconImages4"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeCategory5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relativeCategory4"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewNameCategoryFive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#376335"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutIconImages5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/textViewNameCategoryFive"
+                    android:background="@drawable/layout_bg_light_grey"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="7dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iconImages5"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="3dp"
+                        android:src="@drawable/icon_images_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textCountImagesFive"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="3dp"
+                        android:layout_toEndOf="@id/iconImages5"
+                        android:textColor="#EA8A42"
+                        android:textSize="10dp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iconViewSeeMoreFive"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:src="@drawable/icon_see_more_green"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewFive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relativeLayoutIconImages5"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeCategory6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/relativeCategory5"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_recycler_search_green"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewNameCategorySix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutIconImages6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/textViewNameCategorySix"
+                    android:background="@drawable/layout_bg_light_green"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="7dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iconImages6"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_margin="3dp"
+                        android:src="@drawable/icon_images_small" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textCountImagesSix"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="3dp"
+                        android:layout_toEndOf="@id/iconImages6"
+                        android:textColor="#EA8A42"
+                        android:textSize="10dp"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iconViewSeeMoreSix"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:src="@drawable/icon_see_more_white"
+                    android:textColor="@color/light_grey"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewSix"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@+id/relativeLayoutIconImages6"
+                    android:orientation="horizontal"/>
+            </RelativeLayout>
+
+
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 </FrameLayout>

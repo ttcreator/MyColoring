@@ -5,7 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:id="@+id/parentRelativeLayout"
     tools:context="com.ttcreator.mycoloring.ColoringActivity">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/backPressedButton"
+        android:backgroundTint="@color/white"
+        android:layout_toEndOf="@+id/tools_pain_top_bar"
+        android:layout_margin="20dp"
+        android:src="@drawable/back_pressed_icon" />
+
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/bottomlay"
@@ -172,7 +183,7 @@
         <uk.co.senab.photoview.ColourImageView
             android:id="@+id/color_image_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></uk.co.senab.photoview.ColourImageView>
+            android:layout_height="match_parent"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -187,6 +198,35 @@
         layout="@layout/tools_paint_top_bar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"></include>
+        android:layout_alignParentTop="true"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="50px"
+        android:layout_height="50px"
+        android:id="@+id/settingsButton"
+        android:background="@drawable/icon_settings"
+        android:layout_toLeftOf="@+id/bottomlay"
+        android:layout_margin="20dp"
+        android:layout_alignParentTop="true"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="50px"
+        android:layout_height="50px"
+        android:id="@+id/disableAdsButton"
+        android:background="@drawable/icon_disable_ads_50x50"
+        android:layout_toLeftOf="@+id/bottomlay"
+        android:layout_below="@+id/settingsButton"
+        android:layout_margin="20dp" />
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-8673003336752212/6157309690">
+    </com.google.android.gms.ads.AdView>
 
 </RelativeLayout>

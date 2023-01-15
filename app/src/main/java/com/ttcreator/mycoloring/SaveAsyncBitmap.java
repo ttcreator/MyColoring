@@ -5,6 +5,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,11 +19,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class SaveAsyncBitmap extends Thread {
 
     private String TAG = "Save Error";
-
 
     public String inBackgroundSaveSD(Bitmap finalBitmap, Context context, String fileName, String key) {
 
@@ -33,17 +35,24 @@ public class SaveAsyncBitmap extends Thread {
         try {
             fos = new FileOutputStream(appSpecificExternalDir);
             finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.close();
-            SharedPreferencesFactory.saveStringUrl(context.getApplicationContext(), key,
-                    appSpecificExternalDir.getPath());
-            return appSpecificExternalDir.getPath();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            // Обработка ошибки файла
             e.printStackTrace();
             return "FAILED";
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    // Обработка ошибки закрытия файла
+                    e.printStackTrace();
+                    return "FAILED";
+                }
+            }
         }
-        return appSpecificExternalDir.getPath() + fileName;
+        SharedPreferencesFactory.saveStringUrl(context.getApplicationContext(), key,
+                appSpecificExternalDir.getPath());
+        return appSpecificExternalDir.getPath();
     }
 
     public String inBackgroundSaveLocal(Bitmap finalBitmap, Context context, String fileName, String key) {
@@ -53,12 +62,14 @@ public class SaveAsyncBitmap extends Thread {
                     "Error creating media file, check storage permissions: ");// e.getMessage());
         }
         try {
-            FileOutputStream fos = context.openFileOutput(mypath.getName(), Context.MODE_PRIVATE);
-            finalBitmap.compress(Bitmap.CompressFormat.PNG, 90, fos);
-            fos.close();
-            SharedPreferencesFactory.saveStringUrl(context.getApplicationContext(), key,
-                    mypath.getPath());
-            return mypath.getPath();
+            if (finalBitmap != null) {
+                FileOutputStream fos = context.openFileOutput(mypath.getName(), Context.MODE_PRIVATE);
+                finalBitmap.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                fos.close();
+                SharedPreferencesFactory.saveStringUrl(context.getApplicationContext(), key,
+                        mypath.getPath());
+                return mypath.getPath();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

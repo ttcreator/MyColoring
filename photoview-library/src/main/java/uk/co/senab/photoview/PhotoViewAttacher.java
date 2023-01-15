@@ -19,6 +19,7 @@ package uk.co.senab.photoview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
@@ -26,6 +27,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -229,12 +232,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         return mZoomEnabled;
     }
 
-    /**
-     * Clean-up the resources attached to this object. This needs to be called when the ImageView is
-     * no longer used. A good example is from {@link android.view.View#onDetachedFromWindow()} or
-     * from {@link android.app.Activity#onDestroy()}. This is automatically called if you are using
-     * {@link uk.co.senab.photoview.PhotoView}.
-     */
+
     @SuppressWarnings("deprecation")
     public void cleanup() {
         if (null == mImageView) {
@@ -488,11 +486,29 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
-        if (Build.VERSION.SDK_INT >= 30) {
-            VibrationEffect effect = VibrationEffect.startComposition()
-                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_LOW_TICK, 0.5f)
-                    .compose();
+
+        SharedPreferences sharedPreferences = PreferenceManager
+                .getDefaultSharedPreferences(v.getContext());
+        if (sharedPreferences.getBoolean("setVibration", true)) {
+
+            Context context = v.getContext();
+            final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            final VibrationEffect vibrationEffect1;
+
+            // this is the only type of the vibration which requires system version Oreo (API 26)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                // this effect creates the vibration of default amplitude for 1000ms(1 sec)
+                vibrationEffect1 = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK);
+
+                // it is safe to cancel other vibrations currently taking place
+                vibrator.cancel();
+                vibrator.vibrate(vibrationEffect1);
+            }
         }
+
+
+
         boolean handled = false;
         if (mZoomEnabled && hasDrawable((ImageView) v)) {
             ViewParent parent = v.getParent();

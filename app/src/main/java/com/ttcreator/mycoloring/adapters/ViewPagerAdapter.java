@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.google.android.material.tabs.TabItem;
+import com.ttcreator.mycoloring.BaseFragmentCategory;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,8 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     public ArrayList<Fragment> fragmentArrayList = new ArrayList<>();
     public ArrayList<String> fragmentTitle = new ArrayList<>();
+
+    private BaseFragmentCategory baseFragmentCategory;
 
     public ViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
@@ -40,4 +43,5 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     public CharSequence getTitle (int position) {
         return fragmentTitle.get(position);
     }
+
 }

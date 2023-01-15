@@ -1,14 +1,23 @@
 package com.ttcreator.mycoloring;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.core.widget.ImageViewCompat;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,19 +25,41 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
+import android.widget.VideoView;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ttcreator.mycoloring.R;
@@ -42,6 +73,9 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.util.Arrays;
+import java.util.List;
+
 import kotlinx.coroutines.internal.MissingMainCoroutineDispatcherFactory;
 import uk.co.senab.photoview.ColourImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -50,6 +84,8 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 public class ColoringActivity extends AppCompatActivity implements View.OnClickListener {
 
     private PhotoViewAttacher photoViewAttacher;
+    private RelativeLayout parentRelativeLayout;
+    private LinearLayoutCompat bottomlay;
     private TableLayout colorTable;
     private ColourImageView colourImageView = null;
     private ImageView currentColor, cColor1, cColor2, cColor3;
@@ -63,11 +99,20 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     private ProgressBar progressBar;
     private Bitmap startBitmap;
     private Uri contentUri;
+    private FloatingActionButton backPressedButton;
+    private boolean isLoadingComplete;
+    private AppCompatButton settingsButton, disableAdsButton;
+    private AdView adViewBanner;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private boolean isPurchase;
+    private int clicks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coloring);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         getSupportActionBar().hide();
 
@@ -78,16 +123,35 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         category = intent.getStringExtra("categoryPosition");
         stateUrl = intent.getStringExtra("statePosition");
         contentUri = intent.getData();
+        isLoadingComplete = false;
 
         ContentResolver contentResolver = getContentResolver();
         ContentValues cv = new ContentValues();
         cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, "0");
         contentResolver.update(contentUri, cv, MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, null);
 
-
         checkSdCard();
         initImageLoader(this);
         initViews();
+
+        isPurchase = SharedPreferencesFactory.getBoolean(this, "isPurchase");
+        if (!isPurchase) {
+            SplashScreenActivity.adsManager.createAds(adViewBanner);
+            SplashScreenActivity.adsManager.showInterstitialAds(this);
+        } else {
+            View view = getWindow().getDecorView();
+            int orientation = getResources().getConfiguration().orientation;
+            if (Configuration.ORIENTATION_PORTRAIT == orientation) {
+                adViewBanner.setVisibility(View.INVISIBLE);
+                parentRelativeLayout = (RelativeLayout) findViewById(R.id.parentRelativeLayout);
+                bottomlay = (LinearLayoutCompat) findViewById(R.id.bottomlay);
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(FrameLayout
+                        .LayoutParams.MATCH_PARENT, MyApp.getScreenHeight(this) / 22);
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                bottomlay.setLayoutParams(layoutParams);
+            }
+        }
+
         addEvent();
 
         if (cachedBitmap == null) {
@@ -120,6 +184,7 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
                         colourImageView.clearStack();
                     }
                     progressBar.setVisibility(View.GONE);
+                    isLoadingComplete = true;
                 }
 
                 @Override
@@ -132,12 +197,15 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             colourImageView.setImageBitmap(cachedBitmap);
 
         }
+
     }
 
     private void initViews() {
 
+        disableAdsButton = (AppCompatButton) findViewById(R.id.disableAdsButton);
+        settingsButton = (AppCompatButton) findViewById(R.id.settingsButton);
         colourImageView = (ColourImageView) findViewById(R.id.color_image_view);
-        colorTable = (TableLayout) findViewById(R.id.colortable);
+//        colorTable = (TableLayout) findViewById(R.id.colortable);
         cColor1 = (ImageView) findViewById(R.id.current_pen1);
         cColor2 = (ImageView) findViewById(R.id.current_pen2);
         cColor3 = (ImageView) findViewById(R.id.current_pen3);
@@ -148,11 +216,31 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         clearAll = (ImageButton) findViewById(R.id.clear_button);
         save = (ImageButton) findViewById(R.id.save_button);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        backPressedButton = (FloatingActionButton) findViewById(R.id.backPressedButton);
         progressBar.setVisibility(View.GONE);
+        adViewBanner = findViewById(R.id.adView);
 
     }
 
     public void addEvent() {
+
+        disableAdsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PurchaseDialog purchaseDialog = new PurchaseDialog();
+                purchaseDialog.show(getSupportFragmentManager(),
+                        "PurchaseDialogFragment");
+            }
+        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent openSettings = new Intent(getApplicationContext(),
+                        SettingsColoringActivity.class);
+                startActivity(openSettings);
+            }
+        });
 
         undo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,9 +265,25 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             }
         });
 
+        backPressedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        clicks = 0;
         colourImageView.setOnRedoUndoListener(new ColourImageView.OnRedoUndoListener() {
             @Override
             public void onRedoUndo(int undoSize, int redoSize) {
+                    clicks++;
+                    if (clicks % 3 == 0) {
+                        // Show the ad
+                        if (!isPurchase) {
+                            SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                        }
+                    }
+
                 ContentResolver contentResolver = getContentResolver();
                 if (undoSize != 0) {
                     undo.setEnabled(true);
@@ -225,17 +329,17 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
                                     e.printStackTrace();
                                 }
                                 startBitmap = loadAsyncBitmap.getBtmImage();
-//                                colourImageView.setImageBitmap(startBitmap);
                                 loadAsyncBitmap.showLagreImageAsynWithNoCacheOpen(colourImageView, imgUrls,
                                         new ImageLoadingListener() {
                                             @Override
                                             public void onLoadingStarted(String imageUri, View view) {
                                                 progressBar.setVisibility(View.VISIBLE);
+
                                             }
 
                                             @Override
                                             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                                                Log.d("LoadingImage", "WhenFaileLoadingImage");
                                             }
 
                                             @Override
@@ -251,6 +355,7 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
 
                                             @Override
                                             public void onLoadingCancelled(String imageUri, View view) {
+                                                Log.d("LoadingImage", "WhenFaileLoadingImage");
                                             }
                                         });
                                 dialog.cancel();
@@ -377,14 +482,14 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     protected void onPause() {
         super.onPause();
         setSaveColor();
-       // setSavedBitmap();
+        setSavedBitmap();
     }
 
     private String setSavedBitmap() {
         String path = null;
         SaveAsyncBitmap saveAsyncBitmap = new SaveAsyncBitmap();
 
-        if (colourImageView != null && colourImageView.bmstackIsNull() == true) {
+        if (colourImageView != null && colourImageView.bmstackIsNull() == true && cachedBitmap != null) {
             if (fromSdCard) {
                 String pathFromSD = saveAsyncBitmap.inBackgroundSaveSD(colourImageView.getmBitmap(), getApplicationContext(),
                         nameImages, nameImages);
@@ -424,7 +529,9 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        setSavedBitmap();
+        if (isLoadingComplete) {
+            setSavedBitmap();
+        }
         super.onBackPressed();
     }
 
@@ -432,7 +539,6 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
 
         ContentResolver contentResolver = getContentResolver();
 
-        checkSdCard();
         if (fromSdCard) {
             String[] projection = {MCDataContract.NewImages.MC_NEW_IMAGE_STATE};
             Cursor cursor = contentResolver.query(contentUri, projection,
@@ -442,6 +548,7 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             while (cursor.moveToNext()) {
                 stateFromDB = cursor.getString(colunmIndexState);
             }
+            cursor.close();
             if (stateFromDB != null) {
                 cachedBitmap = BitmapFactory.decodeFile(stateFromDB);
                 colourImageView.setImageBitmap(cachedBitmap);
@@ -449,17 +556,17 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             } else {
                 return null;
             }
-//            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
-//            if (cachedBitmap != null) {
-//                colourImageView.setImageBitmap(cachedBitmap);
-//            }
         } else {
 
             String[] projection = {MCDataContract.NewImages.MC_NEW_IMAGE_STATE};
             Cursor cursor = contentResolver.query(contentUri, projection,
                     null, null, null);
             int colunmIndexState = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
-            String stateFromDB = cursor.getString(colunmIndexState);
+            String stateFromDB = null;
+            while (cursor.moveToNext()) {
+                stateFromDB = cursor.getString(colunmIndexState);
+            }
+            cursor.close();
             if (stateFromDB != null) {
                 cachedBitmap = BitmapFactory.decodeFile(stateFromDB);
                 colourImageView.setImageBitmap(cachedBitmap);
@@ -467,11 +574,6 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             } else {
                 return null;
             }
-
-//            cachedBitmap = BitmapFactory.decodeFile(SharedPreferencesFactory.getStringUrl(this, nameImages));
-//            if (cachedBitmap != null) {
-//                colourImageView.setImageBitmap(cachedBitmap);
-//            }
         }
     }
 
@@ -496,8 +598,9 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     private boolean checkSdCard() {
 
         Boolean isSDPresent = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        Boolean isSDSupportedDevice = Environment.isExternalStorageRemovable();
 
-        if (isSDPresent) {
+        if (isSDPresent && isSDSupportedDevice) {
             fromSdCard = true;
         } else {
             fromSdCard = false;

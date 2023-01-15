@@ -13,18 +13,20 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="10dp"
-            android:id="@+id/cardView">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/parentItem">
 
             <com.denzcoskun.imageslider.ImageSlider
                 android:id="@+id/imageSlider"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:iss_auto_cycle="true"
+                app:iss_text_align="CENTER"
                 app:iss_period="3000">
             </com.denzcoskun.imageslider.ImageSlider>
         </androidx.cardview.widget.CardView>
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayoutCategory"

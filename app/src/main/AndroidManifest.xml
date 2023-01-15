@@ -5,20 +5,23 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/enchant"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/enchant_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyColoring"
+        tools:replace="allowBackup,supportsRtl"
         tools:targetApi="31">
         <activity
             android:name=".SettingsColoringActivity"
@@ -46,12 +49,18 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
+            android:screenOrientation="user"
             android:label="Coloring App"/>
 
         <provider
             android:name=".data.MCContentProvider"
             android:authorities="com.ttcreator.mycoloring"
             android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8673003336752212~8811011358"/>
+
     </application>
 
 </manifest>
