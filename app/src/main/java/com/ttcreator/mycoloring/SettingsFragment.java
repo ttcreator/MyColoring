@@ -35,7 +35,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         setPreferencesFromResource(R.xml.coloring_preferences, rootKey);
 
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Preference clearAllImagesButton = findPreference("clearMyImages");
         SeekBarPreference seekBar = findPreference("seekBarMaxSize");
@@ -45,12 +45,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         clearAllImagesButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
                 builder.setMessage("All you images was delete, are you sure?")
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ContentResolver contentResolver = getActivity().getContentResolver();
+                                ContentResolver contentResolver = requireContext().getContentResolver();
                                 String[] projection = {MCDataContract.NewImages._ID,
                                         MCDataContract.NewImages.MC_NEW_IMAGE_STATE};
                                 Cursor cursor = contentResolver.query(MCDataContract.CONTENT_URI,
@@ -66,9 +66,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                         cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
                                         Uri rowUri = Uri.withAppendedPath(MCDataContract.CONTENT_URI, valueId);
                                         contentResolver.update(rowUri, cv, null, null);
-                                        MCDBHelper mcdbHelper = new MCDBHelper(getActivity().getApplicationContext());
+                                        MCDBHelper mcdbHelper = new MCDBHelper(requireContext().getApplicationContext());
                                         mcdbHelper.getAllRows(MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME);
                                     }
+                                    cursor.close();
                                 }
                             }
                         })
@@ -101,7 +102,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                         return false;
                     }
-                    SharedPreferencesFactory.saveInteger(getContext(), SharedPreferencesFactory.StackSize, newValueInt);
+                    SharedPreferencesFactory.saveInteger(requireContext(), SharedPreferencesFactory.StackSize, newValueInt);
                     //seekBar.setValue(newValueInt);
                     return true;
                 } else {
@@ -112,7 +113,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     return false;
                 }
             }
-        }); seekBar.setValue(SharedPreferencesFactory.getInteger(getContext(), (SharedPreferencesFactory.StackSize), 3));
+        }); seekBar.setValue(SharedPreferencesFactory.getInteger(requireContext(), (SharedPreferencesFactory.StackSize), 3));
 
 
         disabeAds.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

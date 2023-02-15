@@ -47,34 +47,6 @@ public class MCDBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
-    public void addCacheImage(CacheImageModel cacheImageModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_URL, cacheImageModel.getImageCacheUrl());
-        contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY, cacheImageModel.getCategory());
-        contentValues.put(MCDataContract.NewImages.MC_NEW_IMAGE_NAME, cacheImageModel.getName());
-        db.insert(MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME, null, contentValues);
-        db.close();
-    }
-
-    public List<CacheImageModel> getAllCacheImage() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        List<CacheImageModel> allCacheImages = new ArrayList<>();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME, null);
-        if (cursor.moveToFirst()) {
-            do {
-                CacheImageModel cacheImageModel = new CacheImageModel();
-                cacheImageModel.setId(Integer.parseInt(cursor.getString(0)));
-                cacheImageModel.setCategory(cursor.getString(1));
-                cacheImageModel.setName(cursor.getString(2));
-                cacheImageModel.setImageCacheUrl(cursor.getString(3));
-                allCacheImages.add(cacheImageModel);
-            } while (cursor.moveToNext());
-        }
-        return allCacheImages;
-    }
-
     public ArrayList<CacheImageModel> getCacheImageByCategory(String[] category, Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         ArrayList<CacheImageModel> cacheImagesByCategory = new ArrayList<>();
@@ -111,68 +83,6 @@ public class MCDBHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return cacheImagesByCategory;
-    }
-
-    public List<CacheImageModel> getCacheImageByStatus(String[] status) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        List<CacheImageModel> cacheImagesByStatus = new ArrayList<>();
-        String selection = MCDataContract.NewImages.MC_NEW_IMAGE_STATUS + "=?";
-        String[] columns = {MCDataContract.NewImages.MC_NEW_IMAGE_URL, MCDataContract.NewImages.MC_NEW_IMAGE_NAME,
-                MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY};
-        Cursor cursor = db.query(MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME, columns,
-                selection, status, null, null, null);
-        if (cursor.moveToFirst()) {
-            do {
-                CacheImageModel cacheImageModel = new CacheImageModel();
-                cacheImageModel.setName(cursor.getString(1));
-                cacheImageModel.setImageCacheUrl(cursor.getString(0));
-                cacheImageModel.setCategory(status[0]);
-                cacheImagesByStatus.add(cacheImageModel);
-            } while (cursor.moveToNext());
-        }
-        return cacheImagesByStatus;
-    }
-
-
-    public List<CacheImageModel> getCacheImageByState() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        List<CacheImageModel> cacheImagesByState = new ArrayList<>();
-        String selection = MCDataContract.NewImages.MC_NEW_IMAGE_STATE + " IS NOT NULL";
-        String[] projection = {MCDataContract.NewImages.MC_NEW_IMAGE_STATE};
-        Cursor cursor = db.query(MCDataContract.NewImages.MC_NEW_IMAGE_TABLE_NAME, projection,
-                selection, null, null, null, null);
-        int columnIndexImageState = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
-        int columnIndexImageUrl = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_URL);
-        if (cursor.moveToFirst()) {
-            do {
-                CacheImageModel cacheImageModel = new CacheImageModel();
-                cacheImageModel.setImageCacheUrl(cursor.getString(columnIndexImageState));
-                cacheImagesByState.add(cacheImageModel);
-            } while (cursor.moveToNext());
-        }
-        return cacheImagesByState;
-    }
-
-    public void getCountTableName() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
-
-        if (c.moveToFirst()) {
-            while (!c.isAfterLast()) {
-                Log.d("Table Name", "Table Name=> " + c.getString(0));
-                c.moveToNext();
-            }
-        }
-    }
-
-    public void dropTable(String tablename) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DROP TABLE " + tablename);
-    }
-
-    public void deleteAllRowsTable(String tablename) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from " + tablename);
     }
 
     public void getAllRows(String tableName) {

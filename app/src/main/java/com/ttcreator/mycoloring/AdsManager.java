@@ -20,6 +20,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
@@ -35,11 +36,13 @@ import java.util.List;
 public class AdsManager {
 
     private Context context;
-    private static InterstitialAd mInterstitialAd;
+    public static InterstitialAd mInterstitialAd;
+    private static boolean adIsLoaded;
 
     public AdsManager(Context context) {
         this.context = context;
     }
+
 
     public void initializateAds () {
         MobileAds.initialize(context, new OnInitializationCompleteListener() {
@@ -55,16 +58,19 @@ public class AdsManager {
         adView.loadAd(adRequestBanner);
     }
 
-    public void loadInterstatialAd() {
+
+
+    public boolean loadInterstatialAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        InterstitialAd.load(context,"ca-app-pub-8673003336752212/9169937103", adRequest,
+        InterstitialAd.load(context,"ca-app-pub-3940256099942544/1033173712", adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         // The mInterstitialAd reference will be null until
                         // an ad is loaded.
                         mInterstitialAd = interstitialAd;
+                        adIsLoaded = true;
                         Log.i("loadInterstatialAd", "onAdLoaded");
                     }
 
@@ -73,8 +79,10 @@ public class AdsManager {
                         // Handle the error
                         Log.d("loadInterstatialAd", loadAdError.toString());
                         mInterstitialAd = null;
+                        adIsLoaded = false;
                     }
                 });
+        return adIsLoaded;
     }
 
     public void showInterstitialAds(Activity activity) {
@@ -84,6 +92,10 @@ public class AdsManager {
         } else {
             Log.d("TAG", "The interstitial ad wasn't ready yet.");
         }
+    }
+
+    public InterstitialAd getmInterstitialAd() {
+        return mInterstitialAd;
     }
 }
 

@@ -29,6 +29,8 @@ import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.QueryPurchasesParams;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,6 +55,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private int keyImage, new_status, haveAds, premiumStatus;
     private String imageUrl, name, imageCategory, status;
     public static AdsManager adsManager;
+    public static InterstitialAd mInterstitialAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +68,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         adsManager.initializateAds();
 
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-        Cursor cursorAllItem = getContentResolver().query(MCDataContract.CONTENT_URI,
-                null, null, null, null, null);
+//        Cursor cursorAllItem = getContentResolver().query(MCDataContract.CONTENT_URI,
+//                null, null, null, null, null);
         dbRef.child("images").addChildEventListener(firebaseChildEvenListener());
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -76,7 +79,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    sleep(10000);
+                    sleep(5000);
                 } catch (Exception e) {
 
                 } finally {
@@ -86,9 +89,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         };
         thread.start();
 
-        NotificationScheduler notificationScheduler = new NotificationScheduler(this);
-        notificationScheduler.createNotificationChannel();
-        notificationScheduler.main();
+//        NotificationScheduler notificationScheduler = new NotificationScheduler(this);
+//        notificationScheduler.createNotificationChannel();
+//        notificationScheduler.main();
     }
 
     @Override

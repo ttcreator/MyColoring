@@ -59,7 +59,7 @@ public class PurchaseDialog extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         view = inflater.inflate(R.layout.purchase_dialog_fragment, container, false);
 
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -127,7 +127,7 @@ public class PurchaseDialog extends DialogFragment {
             }
         };
 
-        billingClient = BillingClient.newBuilder(getContext())
+        billingClient = BillingClient.newBuilder(requireContext())
                 .setListener(purchasesUpdatedListener)
                 .enablePendingPurchases()
                 .build();
@@ -162,11 +162,11 @@ public class PurchaseDialog extends DialogFragment {
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED)
             if (getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
-                    SharedPreferencesFactory.saveBoolean(getContext(), "isPurchase", true);
+                    SharedPreferencesFactory.saveBoolean(requireContext(), "isPurchase", true);
                     Bundle result = new Bundle();
                     result.putString("isPurchaseOK", "OK");
                     getParentFragmentManager().setFragmentResult("resultPurchasedToFragment", result);
-                    getDialog().dismiss();
+                    requireDialog().dismiss();
                 });
             }
     }
@@ -206,7 +206,7 @@ public class PurchaseDialog extends DialogFragment {
                             @NonNull BillingResult billingResult,
                             @NonNull List<ProductDetails> productDetailsList) {
                         productDetails = productDetailsList;
-                        getActivity().runOnUiThread(() -> {
+                        requireActivity().runOnUiThread(() -> {
                             oneWeekPurchaseButton.setText("Weekly: " + productDetails.get(2).getSubscriptionOfferDetails()
                                     .get(0).getPricingPhases().getPricingPhaseList().get(0).getFormattedPrice());
                             oneMonthPurchaseButton.setText("Monthly: " + productDetails.get(0).getSubscriptionOfferDetails()
@@ -234,7 +234,7 @@ public class PurchaseDialog extends DialogFragment {
                 .setProductDetailsParamsList(productDetailsParamsList)
                 .build();
 
-        BillingResult billingResult = billingClient.launchBillingFlow(getActivity(), billingFlowParams);
+        BillingResult billingResult = billingClient.launchBillingFlow(requireActivity(), billingFlowParams);
     }
 
     public void consumePurchase(View view) {
@@ -249,7 +249,7 @@ public class PurchaseDialog extends DialogFragment {
                                           @NonNull String purchaseToken) {
                 if (billingResult.getResponseCode() ==
                         BillingClient.BillingResponseCode.OK) {
-                    getActivity().runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                     });
                 }
             }
@@ -259,7 +259,7 @@ public class PurchaseDialog extends DialogFragment {
 
     void checkSubscription(){
 
-        billingClient = BillingClient.newBuilder(getContext()).enablePendingPurchases().setListener((billingResult, list) -> {}).build();
+        billingClient = BillingClient.newBuilder(requireContext()).enablePendingPurchases().setListener((billingResult, list) -> {}).build();
         final BillingClient finalBillingClient = billingClient;
         billingClient.startConnection(new BillingClientStateListener() {
             @Override

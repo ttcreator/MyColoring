@@ -1,5 +1,6 @@
 package com.ttcreator.mycoloring.adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -25,10 +26,12 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.ttcreator.mycoloring.AdsManager;
+import com.ttcreator.mycoloring.AllFromCategory;
 import com.ttcreator.mycoloring.ColoringActivity;
-import com.ttcreator.mycoloring.MainActivity;
 import com.ttcreator.mycoloring.MyApp;
 import com.ttcreator.mycoloring.PurchaseDialog;
 import com.ttcreator.mycoloring.R;
@@ -40,6 +43,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ttcreator.mycoloring.SharedPreferencesFactory;
+import com.ttcreator.mycoloring.SplashScreenActivity;
 import com.ttcreator.mycoloring.data.MCDataContract;
 import com.ttcreator.mycoloring.model.CacheImageModel;
 
@@ -56,6 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ProgressBar progressBarItem;
     private int lastPosition = -1;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private boolean isUserHavePrem;
 
     public RecyclerViewAdapter(ArrayList<CacheImageModel> cacheImageModels, Context context) {
         this.cacheImageModels = cacheImageModels;
@@ -73,6 +78,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        SplashScreenActivity.adsManager.loadInterstatialAd();
         imgUrl = cacheImageModels.get(position).getImageCacheUrl();
         nameImage = cacheImageModels.get(position).getName();
         category = cacheImageModels.get(position).getCategory();
@@ -80,9 +86,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         new_status = cacheImageModels.get(position).getNewStatus();
         haveAds = cacheImageModels.get(position).getHaveAds();
         premiumStatus = cacheImageModels.get(position).getPremiumStatus();
-        boolean isUserHavePrem = SharedPreferencesFactory.getBoolean(context, "isPurchase");
+        isUserHavePrem = SharedPreferencesFactory.getBoolean(context, "isPurchase");
         if (new_status != 0) {
-            holder.iconNew.setImageResource(R.drawable.icons_new);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                holder.iconNew.setImageResource(R.drawable.icon_new_1);
+            } else {
+                holder.iconNew.setImageResource(R.drawable.icon_new_2);
+            }
             holder.iconNew.setVisibility(View.VISIBLE);
         } else {
             holder.iconNew.setVisibility(View.GONE);
@@ -170,15 +180,48 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         int id = cacheImageModels.get(posit).getId();
         Uri uri = ContentUris.withAppendedId(MCDataContract.CONTENT_URI, id);
         sendToGoogleAnalyticsEvetns(urlImagePosition, namePosition);
-        Intent intent = new Intent(v.getContext(),
-                ColoringActivity.class);
-        intent.putExtra("urlImagePosition", urlImagePosition);
-        intent.putExtra("nameImage", namePosition);
-        intent.putExtra("keyPosition", imageKeyPosition);
-        intent.putExtra("categoryPosition", categoryPosition);
-        intent.putExtra("position", posit);
-        intent.setData(uri);
-        v.getContext().startActivity(intent);
+
+        if (!isUserHavePrem) {
+            InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+            if (mInterstitialAds != null ) {
+                SplashScreenActivity.adsManager.showInterstitialAds((Activity) context);
+                mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        Intent intent = new Intent(v.getContext(),
+                                ColoringActivity.class);
+                        intent.putExtra("urlImagePosition", urlImagePosition);
+                        intent.putExtra("nameImage", namePosition);
+                        intent.putExtra("keyPosition", imageKeyPosition);
+                        intent.putExtra("categoryPosition", categoryPosition);
+                        intent.putExtra("position", posit);
+                        intent.setData(uri);
+                        v.getContext().startActivity(intent);
+                    }
+                });
+            } else {
+                Intent intent = new Intent(v.getContext(),
+                        ColoringActivity.class);
+                intent.putExtra("urlImagePosition", urlImagePosition);
+                intent.putExtra("nameImage", namePosition);
+                intent.putExtra("keyPosition", imageKeyPosition);
+                intent.putExtra("categoryPosition", categoryPosition);
+                intent.putExtra("position", posit);
+                intent.setData(uri);
+                v.getContext().startActivity(intent);
+            }
+        } else {
+            Intent intent = new Intent(v.getContext(),
+                    ColoringActivity.class);
+            intent.putExtra("urlImagePosition", urlImagePosition);
+            intent.putExtra("nameImage", namePosition);
+            intent.putExtra("keyPosition", imageKeyPosition);
+            intent.putExtra("categoryPosition", categoryPosition);
+            intent.putExtra("position", posit);
+            intent.setData(uri);
+            v.getContext().startActivity(intent);
+        }
+
     }
 
 
@@ -231,7 +274,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-    private void sendToGoogleAnalyticsEvetns (String urlImagePosition, String nameImage) {
+    private void sendToGoogleAnalyticsEvetns(String urlImagePosition, String nameImage) {
         Bundle params = new Bundle();
         params.putString("urlImagePosition", urlImagePosition);
         params.putString("nameImage", nameImage);

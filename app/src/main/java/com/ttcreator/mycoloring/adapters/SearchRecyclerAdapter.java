@@ -1,5 +1,6 @@
 package com.ttcreator.mycoloring.adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +19,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,11 +31,16 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.ttcreator.mycoloring.AdsManager;
 import com.ttcreator.mycoloring.ColoringActivity;
 import com.ttcreator.mycoloring.MyApp;
 import com.ttcreator.mycoloring.PurchaseDialog;
 import com.ttcreator.mycoloring.R;
 import com.ttcreator.mycoloring.SharedPreferencesFactory;
+import com.ttcreator.mycoloring.SplashScreenActivity;
 import com.ttcreator.mycoloring.data.MCDataContract;
 import com.ttcreator.mycoloring.model.CategoryItemModel;
 
@@ -50,6 +56,8 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     private String nameItem;
     private String category;
     private int lastPosition = -1;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private boolean isUserHavePrem;
 
     public SearchRecyclerAdapter(List<CategoryItemModel> categoryItemModelList, Context context, String categoryBlock) {
         this.categoryItemModelList = categoryItemModelList;
@@ -62,6 +70,7 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
     public SearchRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.category_recycler_item, parent, false);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
         return new ViewHolder(view);
     }
 
@@ -75,9 +84,14 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         new_status = categoryItemModelList.get(position).getNewStatus();
         haveAds = categoryItemModelList.get(position).getHaveAds();
         premiumStatus = categoryItemModelList.get(position).getPremiumStatus();
-        boolean isUserHavePrem = SharedPreferencesFactory.getBoolean(context, "isPurchase");
+        SplashScreenActivity.adsManager.loadInterstatialAd();
+        isUserHavePrem = SharedPreferencesFactory.getBoolean(context, "isPurchase");
         if (new_status != 0) {
-            holder.iconNew.setImageResource(R.drawable.icons_new);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                holder.iconNew.setImageResource(R.drawable.icon_new_1);
+            } else {
+                holder.iconNew.setImageResource(R.drawable.icon_new_2);
+            }
             holder.iconNew.setVisibility(View.VISIBLE);
         } else {
             holder.iconNew.setVisibility(View.GONE);
@@ -169,16 +183,39 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
         int imageKeyPosition = categoryItemModelList.get(posit).getimgKey();
         int id = categoryItemModelList.get(posit).getId();
         Uri uri = ContentUris.withAppendedId(MCDataContract.CONTENT_URI, id);
-        Intent intent = new Intent(v.getContext(),
-                ColoringActivity.class);
-        intent.putExtra("urlImagePosition", urlImagePosition);
-        intent.putExtra("nameImage", namePosition);
-        intent.putExtra("keyPosition", imageKeyPosition);
-        intent.putExtra("categoryPosition", catNamePosition);
-        intent.putExtra("position", posit);
-        intent.setData(uri);
-        v.getContext().startActivity(intent);
+        sendToGoogleAnalyticsEvetns(urlImagePosition, namePosition);
+
+        if (!isUserHavePrem) {
+            SplashScreenActivity.adsManager.showInterstitialAds((Activity) context);
+            InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+            mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    Intent intent = new Intent(v.getContext(),
+                            ColoringActivity.class);
+                    intent.putExtra("urlImagePosition", urlImagePosition);
+                    intent.putExtra("nameImage", namePosition);
+                    intent.putExtra("keyPosition", imageKeyPosition);
+                    intent.putExtra("categoryPosition", catNamePosition);
+                    intent.putExtra("position", posit);
+                    intent.setData(uri);
+                    v.getContext().startActivity(intent);
+                }
+            });
+        } else {
+            Intent intent = new Intent(v.getContext(),
+                    ColoringActivity.class);
+            intent.putExtra("urlImagePosition", urlImagePosition);
+            intent.putExtra("nameImage", namePosition);
+            intent.putExtra("keyPosition", imageKeyPosition);
+            intent.putExtra("categoryPosition", catNamePosition);
+            intent.putExtra("position", posit);
+            intent.setData(uri);
+            v.getContext().startActivity(intent);
+        }
+
     }
+
 
     @Override
     public long getItemId(int position) {
@@ -228,5 +265,12 @@ public class SearchRecyclerAdapter extends RecyclerView.Adapter<SearchRecyclerAd
             handler.postDelayed(r, 5000);
             lastPosition = position;
         }
+    }
+
+    private void sendToGoogleAnalyticsEvetns(String urlImagePosition, String nameImage) {
+        Bundle params = new Bundle();
+        params.putString("urlImagePosition", urlImagePosition);
+        params.putString("nameImage", nameImage);
+        mFirebaseAnalytics.logEvent("share_image", params);
     }
 }

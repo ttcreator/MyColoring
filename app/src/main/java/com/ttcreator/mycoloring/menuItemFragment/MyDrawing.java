@@ -82,7 +82,7 @@ public class MyDrawing extends Fragment {
                 @Override
                 public void onClick(View textView) {
                     Fragment fragment = new Search();
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.frame_layout, fragment);
                     fragmentTransaction.addToBackStack(null);
@@ -107,7 +107,7 @@ public class MyDrawing extends Fragment {
 
     private List<CacheImageModel> getCacheImageByState() {
         List<CacheImageModel> cacheImagesByState = new ArrayList<>();
-        ContentResolver contentResolver = getContext().getContentResolver();
+        ContentResolver contentResolver = requireContext().getContentResolver();
         String selection = MCDataContract.NewImages.MC_NEW_IMAGE_STATE + " IS NOT NULL";
         String[] projection = {
                 MCDataContract.NewImages.MC_NEW_IMAGE_NAME,
@@ -145,7 +145,6 @@ public class MyDrawing extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        recyclerViewAdapter.notifyItemChanged(position);
     }
 
 

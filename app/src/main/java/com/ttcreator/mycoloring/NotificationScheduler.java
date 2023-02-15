@@ -76,7 +76,6 @@ public class NotificationScheduler {
 
     public void sendNotifications () {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "firstChannel")
-                .setSmallIcon(R.drawable.icon_bell_notify)
                 .setContentTitle("Wow! You have free items!")
                 .setContentText("You have 15 min for geting premium image free")
                 .setPriority(NotificationCompat.PRIORITY_MAX)

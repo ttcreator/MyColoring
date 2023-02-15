@@ -64,8 +64,8 @@ public class MyGalery extends Fragment {
         cardView.setLayoutParams(layoutParams);
         dbHelper = new MCDBHelper(getContext());
 
-        images.add(new SlideModel("https://firebasestorage.googleapis.com/v0/b/mycoloring-4e5f8.appspot.com/o/images%2FEnchant%2Fenchant_main.png?alt=media&token=7437f99e-7cf4-41c9-b223-25130096835c",
-                "Enchant", null));
+        images.add(new SlideModel("https://firebasestorage.googleapis.com/v0/b/mycoloring-4e5f8.appspot.com/o/images%2FMythical%2FMythical_main.png?alt=media&token=92f81731-b69c-435c-bc59-bf7f30265b2e",
+                "Mythical", null));
         images.add(new SlideModel("https://firebasestorage.googleapis.com/v0/b/mycoloring-4e5f8.appspot.com/o/images%2FCats%2Fhome_cats.png?alt=media&token=178648bb-8131-4819-b6bf-db92a782b321",
                 "Cats", null));
         images.add(new SlideModel("https://firebasestorage.googleapis.com/v0/b/mycoloring-4e5f8.appspot.com/o/images%2FEaster%2Fmain_easter.png?alt=media&token=bbc8b58f-7306-4187-964b-34332d0b61fa",
@@ -77,8 +77,8 @@ public class MyGalery extends Fragment {
             public void onItemSelected(int i) {
                 Intent intent = new Intent(getContext(), AllFromCategory.class);
                 switch (images.get(i).getTitle().toString()) {
-                    case "Enchant":
-                        intent.putExtra("nameCat", "enchant");
+                    case "Mythical":
+                        intent.putExtra("nameCat", "mythical");
                         startActivity(intent);
                         break;
                     case "Cats":
@@ -98,14 +98,18 @@ public class MyGalery extends Fragment {
         viewPagerAdapter = new ViewPagerAdapter(getParentFragmentManager(), getLifecycle());
 
         String[] projection = {MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY};
-        ContentResolver contentResolver = getContext().getContentResolver();
+        ContentResolver contentResolver = requireContext().getContentResolver();
         Cursor cursor = contentResolver.query(MCDataContract.CONTENT_URI,
                 projection,  null, null, null);
         List <String> allCategoty = new ArrayList<>();
         int categoryColumnIndex = cursor.getColumnIndex(MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY);
+        ArrayList<CacheImageModel> specialCategoryList = new ArrayList<>();
+        String [] specialCategory = {"mythical"};
+        specialCategoryList = dbHelper.getCacheImageByCategory(specialCategory, requireContext());
+        viewPagerAdapter.addFragment(BaseFragmentCategory.newInstance(specialCategoryList, specialCategory[0]), specialCategory[0]);
         while (cursor.moveToNext() ) {
             String currentCategory = cursor.getString(categoryColumnIndex);
-            if (!allCategoty.contains(currentCategory)) {
+            if (!allCategoty.contains(currentCategory) && !currentCategory.equals(specialCategory[0])) {
                 allCategoty.add(currentCategory);
                 String [] currentCategortArray = {currentCategory};
                 cacheImageModels = dbHelper.getCacheImageByCategory(currentCategortArray, getContext());

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/iconSplashScreen"
         android:layout_centerInParent="true"
-        android:src="@drawable/lets_color_log"
+        android:src="@drawable/mythical_coloring_ss"
         />
 
     <TextView

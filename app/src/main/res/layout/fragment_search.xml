@@ -47,7 +47,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_margin="3dp"
-                        android:src="@drawable/icon_images_small" />
+                        android:src="@drawable/icon_image_small_min_api" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:src="@drawable/icon_see_more_green"/>
+                    android:src="@drawable/icons_see_more_green"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewFirst"
@@ -113,7 +113,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_margin="3dp"
-                        android:src="@drawable/icon_images_small" />
+                        android:src="@drawable/icon_image_small_min_api" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -134,7 +134,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:src="@drawable/icon_see_more_green"/>
+                    android:src="@drawable/icons_see_more_green"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewSecond"
@@ -183,7 +183,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_margin="3dp"
-                        android:src="@drawable/icon_images_small" />
+                        android:src="@drawable/icon_image_small_min_api" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -204,7 +204,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:src="@drawable/icon_see_more_white"
+                    android:src="@drawable/icons_see_more_white"
                     android:textColor="@color/light_grey"/>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -251,7 +251,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_margin="3dp"
-                        android:src="@drawable/icon_images_small" />
+                        android:src="@drawable/icon_image_small_min_api" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -272,7 +272,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:src="@drawable/icon_see_more_green"/>
+                    android:src="@drawable/icons_see_more_green"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewFour"
@@ -317,7 +317,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_margin="3dp"
-                        android:src="@drawable/icon_images_small" />
+                        android:src="@drawable/icon_image_small_min_api" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -338,7 +338,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:src="@drawable/icon_see_more_green"/>
+                    android:src="@drawable/icons_see_more_green"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewFive"
@@ -384,7 +384,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_margin="3dp"
-                        android:src="@drawable/icon_images_small" />
+                        android:src="@drawable/icon_image_small_min_api" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -405,7 +405,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="25dp"
-                    android:src="@drawable/icon_see_more_white"
+                    android:src="@drawable/icons_see_more_white"
                     android:textColor="@color/light_grey"/>
 
                 <androidx.recyclerview.widget.RecyclerView

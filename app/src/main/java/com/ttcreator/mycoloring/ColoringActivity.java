@@ -58,7 +58,11 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -106,6 +110,8 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
     private FirebaseAnalytics mFirebaseAnalytics;
     private boolean isPurchase;
     private int clicks;
+    private ReviewInfo reviewInfo;
+    private ReviewManager reviewManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +136,7 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         cv.put(MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, "0");
         contentResolver.update(contentUri, cv, MCDataContract.NewImages.MC_NEW_IMAGE_NEW_STATUS, null);
 
+        activateReviewInfo();
         checkSdCard();
         initImageLoader(this);
         initViews();
@@ -137,7 +144,6 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         isPurchase = SharedPreferencesFactory.getBoolean(this, "isPurchase");
         if (!isPurchase) {
             SplashScreenActivity.adsManager.createAds(adViewBanner);
-            SplashScreenActivity.adsManager.showInterstitialAds(this);
         } else {
             View view = getWindow().getDecorView();
             int orientation = getResources().getConfiguration().orientation;
@@ -205,7 +211,6 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         disableAdsButton = (AppCompatButton) findViewById(R.id.disableAdsButton);
         settingsButton = (AppCompatButton) findViewById(R.id.settingsButton);
         colourImageView = (ColourImageView) findViewById(R.id.color_image_view);
-//        colorTable = (TableLayout) findViewById(R.id.colortable);
         cColor1 = (ImageView) findViewById(R.id.current_pen1);
         cColor2 = (ImageView) findViewById(R.id.current_pen2);
         cColor3 = (ImageView) findViewById(R.id.current_pen3);
@@ -224,6 +229,8 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
 
     public void addEvent() {
 
+        clicks = 0;
+
         disableAdsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,12 +246,33 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
                 Intent openSettings = new Intent(getApplicationContext(),
                         SettingsColoringActivity.class);
                 startActivity(openSettings);
+
             }
         });
 
         undo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clicks++;
+                if (clicks % 3 == 0) {
+                    // Show the ad
+                    if (!isPurchase) {
+                        InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                        if (mInterstitialAds != null) {
+                            SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                            mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    colourImageView.undo();
+                                }
+                            });
+                        } else {
+                            colourImageView.undo();
+                        }
+                    } else {
+                        colourImageView.undo();
+                    }
+                }
                 colourImageView.undo();
             }
         });
@@ -252,6 +280,27 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         redo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clicks++;
+                if (clicks % 3 == 0) {
+                    // Show the ad
+                    if (!isPurchase) {
+                        InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                        if (mInterstitialAds != null) {
+                            SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                            mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    colourImageView.redo();
+                                }
+                            });
+                        } else {
+                            colourImageView.redo();
+                        }
+
+                    } else {
+                        colourImageView.redo();
+                    }
+                }
                 colourImageView.redo();
             }
         });
@@ -259,30 +308,51 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String path = setSavedBitmap();
-                Toast.makeText(ColoringActivity.this,
-                        "You state image was saved in: " + path, Toast.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setMessage("Do you like our app?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                startReviewFlow();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String path = setSavedBitmap();
+                                Toast.makeText(ColoringActivity.this,
+                                        "You state image was saved in: " + path, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                builder.show();
             }
         });
 
         backPressedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                if (!isPurchase) {
+                    InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                    if (mInterstitialAds != null) {
+                        SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                        mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                onBackPressed();
+                            }
+                        });
+                    } else {
+                        onBackPressed();
+                    }
+                } else {
+                    onBackPressed();
+                }
             }
         });
 
-        clicks = 0;
+
         colourImageView.setOnRedoUndoListener(new ColourImageView.OnRedoUndoListener() {
             @Override
             public void onRedoUndo(int undoSize, int redoSize) {
-                    clicks++;
-                    if (clicks % 3 == 0) {
-                        // Show the ad
-                        if (!isPurchase) {
-                            SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
-                        }
-                    }
 
                 ContentResolver contentResolver = getContentResolver();
                 if (undoSize != 0) {
@@ -315,59 +385,7 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                builder.setMessage("All progress was delete, are you sure?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                LoadAsyncBitmap loadAsyncBitmap = new LoadAsyncBitmap(colourImageView, imgUrls);
-                                Thread loadThreadBitmap = new Thread(loadAsyncBitmap);
-                                loadThreadBitmap.start();
-                                try {
-                                    loadThreadBitmap.join();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                startBitmap = loadAsyncBitmap.getBtmImage();
-                                loadAsyncBitmap.showLagreImageAsynWithNoCacheOpen(colourImageView, imgUrls,
-                                        new ImageLoadingListener() {
-                                            @Override
-                                            public void onLoadingStarted(String imageUri, View view) {
-                                                progressBar.setVisibility(View.VISIBLE);
-
-                                            }
-
-                                            @Override
-                                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                                                Log.d("LoadingImage", "WhenFaileLoadingImage");
-                                            }
-
-                                            @Override
-                                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                                photoViewAttacher = new PhotoViewAttacher(colourImageView, startBitmap);
-                                                if (startBitmap != null) {
-                                                    colourImageView.setImageBT(startBitmap);
-                                                    colourImageView.clearStack();
-
-                                                }
-                                                progressBar.setVisibility(View.GONE);
-                                            }
-
-                                            @Override
-                                            public void onLoadingCancelled(String imageUri, View view) {
-                                                Log.d("LoadingImage", "WhenFaileLoadingImage");
-                                            }
-                                        });
-                                dialog.cancel();
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.show();
+                clearAllAndAlertDialogShow(v);
             }
         });
 
@@ -385,9 +403,31 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
                     ((TableRow) tableColor.getChildAt(i)).getChildAt(j).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ColorDrawable buttonColor = (ColorDrawable) v.getBackground();
-                            int colorId = buttonColor.getColor();
-                            changeCurrentColor(colorId);
+                            clicks++;
+                            if (!isPurchase && clicks % 3 == 0) {
+                                    InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                                    if (mInterstitialAds != null) {
+                                        SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                                        mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                            @Override
+                                            public void onAdDismissedFullScreenContent() {
+                                                ColorDrawable buttonColor = (ColorDrawable) v.getBackground();
+                                                int colorId = buttonColor.getColor();
+                                                changeCurrentColor(colorId);
+                                            }
+                                        });
+                                    } else {
+                                        ColorDrawable buttonColor = (ColorDrawable) v.getBackground();
+                                        int colorId = buttonColor.getColor();
+                                        changeCurrentColor(colorId);
+                                    }
+
+                                } else {
+                                    ColorDrawable buttonColor = (ColorDrawable) v.getBackground();
+                                    int colorId = buttonColor.getColor();
+                                    changeCurrentColor(colorId);
+                                }
+
                         }
                     });
                 }
@@ -397,9 +437,64 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
         buttonPickColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openColorPicker();
+                    openColorPicker();
             }
         });
+    }
+
+    private void clearAllAndAlertDialogShow(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+        builder.setMessage("All progress was delete, are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        LoadAsyncBitmap loadAsyncBitmap = new LoadAsyncBitmap(colourImageView, imgUrls);
+                        Thread loadThreadBitmap = new Thread(loadAsyncBitmap);
+                        loadThreadBitmap.start();
+                        try {
+                            loadThreadBitmap.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        startBitmap = loadAsyncBitmap.getBtmImage();
+                        loadAsyncBitmap.showLagreImageAsynWithNoCacheOpen(colourImageView, imgUrls,
+                                new ImageLoadingListener() {
+                                    @Override
+                                    public void onLoadingStarted(String imageUri, View view) {
+                                        progressBar.setVisibility(View.VISIBLE);
+
+                                    }
+
+                                    @Override
+                                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                                        Log.d("LoadingImage", "WhenFaileLoadingImage");
+                                    }
+
+                                    @Override
+                                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                        photoViewAttacher = new PhotoViewAttacher(colourImageView, startBitmap);
+                                        if (startBitmap != null) {
+                                            colourImageView.setImageBT(startBitmap);
+                                            colourImageView.clearStack();
+
+                                        }
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+
+                                    @Override
+                                    public void onLoadingCancelled(String imageUri, View view) {
+                                        Log.d("LoadingImage", "WhenFaileLoadingImage");
+                                    }
+                                });
+                        dialog.cancel();
+
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        builder.show();
     }
 
 
@@ -442,22 +537,67 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             int id = v.getId();
             switch (id) {
                 case R.id.current_pen1:
-                    v.setBackgroundResource(R.drawable.set_color_selected);
-                    setDefaultBg(R.id.current_pen2, R.id.current_pen3);
-                    currentColor = (ImageView) v;
-                    changeCurrentColor(currentColor);
+                    clicks++;
+                    if (!isPurchase && clicks % 3 == 0) {
+                        SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                        InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                        mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                v.setBackgroundResource(R.drawable.set_color_selected);
+                                setDefaultBg(R.id.current_pen2, R.id.current_pen3);
+                                currentColor = (ImageView) v;
+                                changeCurrentColor(currentColor);
+                            }
+                        });
+                    } else {
+                        v.setBackgroundResource(R.drawable.set_color_selected);
+                        setDefaultBg(R.id.current_pen2, R.id.current_pen3);
+                        currentColor = (ImageView) v;
+                        changeCurrentColor(currentColor);
+                    }
                     break;
                 case R.id.current_pen2:
-                    v.setBackgroundResource(R.drawable.set_color_selected);
-                    setDefaultBg(R.id.current_pen1, R.id.current_pen3);
-                    currentColor = ((ImageView) v);
-                    changeCurrentColor(currentColor);
+                    clicks++;
+                    if (!isPurchase && clicks % 3 == 0) {
+                        SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                        InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                        mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                v.setBackgroundResource(R.drawable.set_color_selected);
+                                setDefaultBg(R.id.current_pen1, R.id.current_pen3);
+                                currentColor = ((ImageView) v);
+                                changeCurrentColor(currentColor);
+                            }
+                        });
+                    } else {
+                        v.setBackgroundResource(R.drawable.set_color_selected);
+                        setDefaultBg(R.id.current_pen1, R.id.current_pen3);
+                        currentColor = ((ImageView) v);
+                        changeCurrentColor(currentColor);
+                    }
                     break;
                 case R.id.current_pen3:
-                    v.setBackgroundResource(R.drawable.set_color_selected);
-                    setDefaultBg(R.id.current_pen1, R.id.current_pen2);
-                    currentColor = ((ImageView) v);
-                    changeCurrentColor(currentColor);
+                    clicks++;
+                    if (!isPurchase && clicks % 3 == 0) {
+                        SplashScreenActivity.adsManager.showInterstitialAds(ColoringActivity.this);
+                        InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                        mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                v.setBackgroundResource(R.drawable.set_color_selected);
+                                setDefaultBg(R.id.current_pen1, R.id.current_pen2);
+                                currentColor = ((ImageView) v);
+                                changeCurrentColor(currentColor);
+                            }
+                        });
+                    } else {
+                        v.setBackgroundResource(R.drawable.set_color_selected);
+                        setDefaultBg(R.id.current_pen1, R.id.current_pen2);
+                        currentColor = ((ImageView) v);
+                        changeCurrentColor(currentColor);
+                    }
                     break;
             }
         }
@@ -630,6 +770,27 @@ public class ColoringActivity extends AppCompatActivity implements View.OnClickL
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void activateReviewInfo() {
+        reviewManager = ReviewManagerFactory.create(this);
+        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // We can get the ReviewInfo object
+                reviewInfo = task.getResult();
+            } else {
+                Toast.makeText(this, "Review faild to start", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void startReviewFlow() {
+        if (reviewInfo != null) {
+            Task<Void> flow = reviewManager.launchReviewFlow(this, reviewInfo);
+            flow.addOnCompleteListener(task -> {
+            });
+        }
     }
 
 

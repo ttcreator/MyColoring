@@ -19,8 +19,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.ttcreator.mycoloring.AdsManager;
 import com.ttcreator.mycoloring.AllFromCategory;
+import com.ttcreator.mycoloring.ColoringActivity;
 import com.ttcreator.mycoloring.R;
+import com.ttcreator.mycoloring.SharedPreferencesFactory;
+import com.ttcreator.mycoloring.SplashScreenActivity;
 import com.ttcreator.mycoloring.adapters.SearchRecyclerAdapter;
 import com.ttcreator.mycoloring.data.MCDataContract;
 import com.ttcreator.mycoloring.model.CategoryItemModel;
@@ -45,7 +52,7 @@ public class Search extends Fragment {
     private ContentResolver contentResolver;
     private Cursor cursor;
     private SearchRecyclerAdapter recyclerViewAdapter;
-
+    private boolean isPurchase;
     DatabaseReference dbRef;
 
     public Search() {
@@ -63,9 +70,10 @@ public class Search extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerViewThird.setHasFixedSize(true);
         dbRef = FirebaseDatabase.getInstance().getReference();
-
+        isPurchase = SharedPreferencesFactory.getBoolean(requireContext(), "isPurchase");
+        SplashScreenActivity.adsManager.loadInterstatialAd();
         ArrayList<String> categoryList = new ArrayList<>();
-        contentResolver = getContext().getContentResolver();
+        contentResolver = requireContext().getContentResolver();
         String[] projection1 = {MCDataContract.NewImages.MC_NEW_IMAGE_CATEGORY};
         Cursor cursor1 = contentResolver.query(MCDataContract.CONTENT_URI, projection1,
                 null, null, null);
@@ -77,14 +85,14 @@ public class Search extends Fragment {
                     categoryList.add(cursor1.getString(columnIndexCategory1));
                 }
             } while (cursor1.moveToNext());
-
+        cursor1.close();
         getParentFragmentManager().setFragmentResultListener("resultPurchasedToFragment", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 // We use a String here, but any type that can be put in a Bundle is supported
                 String result = bundle.getString("isPurchaseOK");
                 if (result.equals("OK")) {
-                    int position = getActivity().getIntent().getIntExtra("position", 0);
+                    int position = requireActivity().getIntent().getIntExtra("position", 0);
                     recyclerViewAdapter.notifyItemChanged(position);
                 }
             }
@@ -93,47 +101,47 @@ public class Search extends Fragment {
         String categoryFirst = getNameCategoryRandom(categoryList);
         setOnClickListenerToSeeMore(iconViewSeeMoreFirst, categoryFirst);
         textViewNameCategoryFirst.setText(categoryFirst);
-        List <CategoryItemModel> itemListCategoryFirst = getDataFromDB(categoryFirst, textCountImagesFirst);
+        List<CategoryItemModel> itemListCategoryFirst = getDataFromDB(categoryFirst, textCountImagesFirst);
         textCountImagesFirst.setText(String.valueOf(cursor.getCount()));
         setDataToRecyclerView(recyclerViewFirst, categoryFirst, itemListCategoryFirst, 1);
 
         String categorySecond = getNameCategoryRandom(categoryList);
         setOnClickListenerToSeeMore(iconViewSeeMoreSecond, categorySecond);
         textViewNameCategorySecond.setText(categorySecond);
-        List <CategoryItemModel> itemListCategorySecond = getDataFromDB(categorySecond, textCountImagesSecond);
+        List<CategoryItemModel> itemListCategorySecond = getDataFromDB(categorySecond, textCountImagesSecond);
         textCountImagesSecond.setText(String.valueOf(cursor.getCount()));
         setDataToRecyclerView(recyclerViewSecond, categorySecond, itemListCategorySecond, 1);
 
         String categoryThird = getNameCategoryRandom(categoryList);
         setOnClickListenerToSeeMore(iconViewSeeMoreThird, categoryThird);
         textViewNameCategoryThird.setText(categoryThird);
-        List <CategoryItemModel> itemListCategoryThird = getDataFromDB(categoryThird, textCountImagesThird);
+        List<CategoryItemModel> itemListCategoryThird = getDataFromDB(categoryThird, textCountImagesThird);
         textCountImagesThird.setText(String.valueOf(cursor.getCount()));
         setDataToRecyclerView(recyclerViewThird, categoryThird, itemListCategoryThird, 2);
 
         String categoryFour = getNameCategoryRandom(categoryList);
         setOnClickListenerToSeeMore(iconViewSeeMoreFour, categoryFour);
         textViewNameCategoryFour.setText(categoryFour);
-        List <CategoryItemModel> itemListCategoryFour = getDataFromDB(categoryFour, textCountImagesFour);
+        List<CategoryItemModel> itemListCategoryFour = getDataFromDB(categoryFour, textCountImagesFour);
         textCountImagesFour.setText(String.valueOf(cursor.getCount()));
         setDataToRecyclerView(recyclerViewFour, categoryFour, itemListCategoryFour, 1);
 
         String categoryFive = getNameCategoryRandom(categoryList);
         setOnClickListenerToSeeMore(iconViewSeeMoreFive, categoryFive);
         textViewNameCategoryFive.setText(categoryFive);
-        List <CategoryItemModel> itemListCategoryFive = getDataFromDB(categoryFive, textCountImagesFive);
+        List<CategoryItemModel> itemListCategoryFive = getDataFromDB(categoryFive, textCountImagesFive);
         textCountImagesFive.setText(String.valueOf(cursor.getCount()));
         setDataToRecyclerView(recyclerViewFive, categoryFive, itemListCategoryFive, 2);
 
         String categorySix = getNameCategoryRandom(categoryList);
         setOnClickListenerToSeeMore(iconViewSeeMoreSix, categorySix);
         textViewNameCategorySix.setText(categorySix);
-        List <CategoryItemModel> itemListCategorySix = getDataFromDB(categorySix, textCountImagesSix);
+        List<CategoryItemModel> itemListCategorySix = getDataFromDB(categorySix, textCountImagesSix);
         textCountImagesSix.setText(String.valueOf(cursor.getCount()));
         setDataToRecyclerView(recyclerViewSix, categorySix, itemListCategorySix, 1);
     }
 
-    private View initViews(View root) {
+    private void initViews(View root) {
 
         iconViewSeeMoreFirst = root.findViewById(R.id.iconViewSeeMoreFirst);
         textViewNameCategoryFirst = root.findViewById(R.id.textViewNameCategoryFirst);
@@ -151,21 +159,20 @@ public class Search extends Fragment {
         textCountImagesThird = root.findViewById(R.id.textCountImagesThird);
 
         iconViewSeeMoreFour = root.findViewById(R.id.iconViewSeeMoreFour);
-        textViewNameCategoryFour= root.findViewById(R.id.textViewNameCategoryFour);
+        textViewNameCategoryFour = root.findViewById(R.id.textViewNameCategoryFour);
         recyclerViewFour = root.findViewById(R.id.recyclerViewFour);
         textCountImagesFour = root.findViewById(R.id.textCountImagesFour);
 
         iconViewSeeMoreFive = root.findViewById(R.id.iconViewSeeMoreFive);
-        textViewNameCategoryFive= root.findViewById(R.id.textViewNameCategoryFive);
+        textViewNameCategoryFive = root.findViewById(R.id.textViewNameCategoryFive);
         recyclerViewFive = root.findViewById(R.id.recyclerViewFive);
         textCountImagesFive = root.findViewById(R.id.textCountImagesFive);
 
         iconViewSeeMoreSix = root.findViewById(R.id.iconViewSeeMoreSix);
-        textViewNameCategorySix= root.findViewById(R.id.textViewNameCategorySix);
+        textViewNameCategorySix = root.findViewById(R.id.textViewNameCategorySix);
         recyclerViewSix = root.findViewById(R.id.recyclerViewSix);
         textCountImagesSix = root.findViewById(R.id.textCountImagesSix);
 
-        return root;
     }
 
 
@@ -179,7 +186,7 @@ public class Search extends Fragment {
     }
 
     private void setDataToRecyclerView(RecyclerView recyclerView, String categoryFirst,
-                                       List <CategoryItemModel> categoryList, int spanCount) {
+                                       List<CategoryItemModel> categoryList, int spanCount) {
         recyclerView.setHasFixedSize(true);
         recyclerViewAdapter = new SearchRecyclerAdapter(categoryList,
                 getContext(), categoryFirst);
@@ -192,10 +199,25 @@ public class Search extends Fragment {
         iconViewSeeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), AllFromCategory.class);
-                intent.putExtra("nameCat", category);
-                intent.putExtra("title", category);
-                v.getContext().startActivity(intent);
+                if (!isPurchase) {
+                    SplashScreenActivity.adsManager.showInterstitialAds(requireActivity());
+                    InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                    mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            Intent intent = new Intent(v.getContext(), AllFromCategory.class);
+                            intent.putExtra("nameCat", category);
+                            intent.putExtra("title", category);
+                            v.getContext().startActivity(intent);
+                        }
+                    });
+                    SplashScreenActivity.adsManager.loadInterstatialAd();
+                } else {
+                    Intent intent = new Intent(v.getContext(), AllFromCategory.class);
+                    intent.putExtra("nameCat", category);
+                    intent.putExtra("title", category);
+                    v.getContext().startActivity(intent);
+                }
             }
         });
     }

@@ -10,7 +10,7 @@ android {
         applicationId "com.ttcreator.mycoloring"
         minSdk 21
         targetSdk 32
-        versionCode 9
+        versionCode 15
         versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -69,4 +69,9 @@ dependencies {
     }
     implementation 'com.appsflyer:af-android-sdk:6.9.0'
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // OneSignal SDK
+    implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
+
+    implementation 'com.google.android.play:review:2.0.1'
 }

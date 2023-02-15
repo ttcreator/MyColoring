@@ -487,26 +487,6 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
 
-        SharedPreferences sharedPreferences = PreferenceManager
-                .getDefaultSharedPreferences(v.getContext());
-        if (sharedPreferences.getBoolean("setVibration", true)) {
-
-            Context context = v.getContext();
-            final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            final VibrationEffect vibrationEffect1;
-
-            // this is the only type of the vibration which requires system version Oreo (API 26)
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-
-                // this effect creates the vibration of default amplitude for 1000ms(1 sec)
-                vibrationEffect1 = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK);
-
-                // it is safe to cancel other vibrations currently taking place
-                vibrator.cancel();
-                vibrator.vibrate(vibrationEffect1);
-            }
-        }
-
 
 
         boolean handled = false;

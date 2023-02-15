@@ -68,7 +68,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:src="@drawable/icon_images_small" />
+                android:src="@drawable/icon_image_small_min_api" />
 
             <TextView
                 android:id="@+id/textCountImagesFirst"

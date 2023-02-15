@@ -29,6 +29,7 @@ import com.bumptech.glide.request.target.Target;
 import com.ttcreator.mycoloring.MenuDialogFragment;
 import com.ttcreator.mycoloring.MyApp;
 import com.ttcreator.mycoloring.R;
+import com.ttcreator.mycoloring.SharedPreferencesFactory;
 import com.ttcreator.mycoloring.data.MCDataContract;
 import com.ttcreator.mycoloring.model.CacheImageModel;
 
@@ -43,6 +44,7 @@ public class MyDrawingListAdapter extends RecyclerView.Adapter<MyDrawingListAdap
     private String category;
     private String nameImage;
     private ProgressBar progressBarItem;
+    private boolean isUserHavePrem;
 
     public MyDrawingListAdapter(List<CacheImageModel> cacheImageModels, Context context) {
         this.cacheImageModels = cacheImageModels;
@@ -59,6 +61,7 @@ public class MyDrawingListAdapter extends RecyclerView.Adapter<MyDrawingListAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         imgUrl = cacheImageModels.get(position).getImageCacheUrl();
         stateUrl = cacheImageModels.get(position).getState();
         nameImage = cacheImageModels.get(position).getName();

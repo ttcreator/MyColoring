@@ -1,20 +1,21 @@
 {
   "project_info": {
     "project_number": "1038914074497",
+    "firebase_url": "https://mycoloring-4e5f8-default-rtdb.firebaseio.com",
     "project_id": "mycoloring-4e5f8",
     "storage_bucket": "mycoloring-4e5f8.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1038914074497:android:47197cfe34c49c3985da80",
+        "mobilesdk_app_id": "1:1038914074497:android:9e83193e7a5fbf1985da80",
         "android_client_info": {
           "package_name": "com.ttcreator.mycoloring"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1038914074497-hg9gmjnfil88gcl7n6bhaie0kcsiuq1s.apps.googleusercontent.com",
+          "client_id": "1038914074497-41q8egmi2ic3ec5q4v6od19uf8g73g8k.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ttcreator.mycoloring",

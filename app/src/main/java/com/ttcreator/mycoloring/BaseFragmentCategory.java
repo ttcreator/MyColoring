@@ -37,12 +37,12 @@ public class BaseFragmentCategory extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cacheImageModels = getArguments().getParcelableArrayList("cacheImageModelsList");
-        category = getArguments().getString("currentCategory");
+        cacheImageModels = requireArguments().getParcelableArrayList("cacheImageModelsList");
+        category = requireArguments().getString("currentCategory");
         if (category != null) {
             String[] cat = {category};
             dbHelper = new MCDBHelper(getContext());
-            cacheImageModels = dbHelper.getCacheImageByCategory(cat, getContext());
+            cacheImageModels = dbHelper.getCacheImageByCategory(cat, requireContext());
         }
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -54,7 +54,7 @@ public class BaseFragmentCategory extends Fragment {
                 // We use a String here, but any type that can be put in a Bundle is supported
                 String result = bundle.getString("isPurchaseOK");
                 if (result.equals("OK")) {
-                    int position = getActivity().getIntent().getIntExtra("position", 0);
+                    int position = requireActivity().getIntent().getIntExtra("position", 0);
                     recyclerViewAdapter.notifyItemChanged(position);
                 }
             }

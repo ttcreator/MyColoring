@@ -29,6 +29,8 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ttcreator.mycoloring.data.MCDataContract;
 
@@ -45,6 +47,7 @@ public class MenuDialogFragment extends DialogFragment {
     private RelativeLayout parentDialogFragmentLayout;
     private LinearLayoutCompat parentThreeButton;
     private FloatingActionButton closeButton;
+    private boolean isUserHavePrem;
 
     @Nullable
     @Override
@@ -61,6 +64,7 @@ public class MenuDialogFragment extends DialogFragment {
             getDialog().getWindow().setGravity(Gravity.BOTTOM);
         }
 
+        isUserHavePrem = SharedPreferencesFactory.getBoolean(requireContext(), "isPurchase");
         closeButton = root.findViewById(R.id.closeButton);
         parentThreeButton = root.findViewById(R.id.parentThreeButton);
         imageView = root.findViewById(R.id.imageView);
@@ -78,7 +82,7 @@ public class MenuDialogFragment extends DialogFragment {
         contentUri = Uri.parse(uriToSting);
 
         imageView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        imageView.getLayoutParams().width = MyApp.getScreenWidth(getContext()) * 3/4;
+        imageView.getLayoutParams().width = MyApp.getScreenWidth(requireContext()) * 3/4;
         Glide.with(getContext())
                 .load(stateImagePosition)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -89,13 +93,35 @@ public class MenuDialogFragment extends DialogFragment {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                    dismiss();
             }
         });
 
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (!isUserHavePrem) {
+                    SplashScreenActivity.adsManager.showInterstitialAds(requireActivity());
+                    InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                    mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            Intent intent = new Intent(v.getContext(),
+                                    ColoringActivity.class);
+                            intent.putExtra("urlImagePosition", urlImagePosition);
+                            intent.putExtra("nameImage", namePosition);
+                            intent.putExtra("keyPosition", imageKeyPosition);
+                            intent.putExtra("categoryPosition", categoryPosition);
+                            intent.putExtra("statePosition", stateImagePosition);
+                            intent.putExtra("position", posit);
+                            intent.setData(contentUri);
+                            v.getContext().startActivity(intent);
+                            dismiss();
+                        }
+                    });
+                }
+                else{
                     Intent intent = new Intent(v.getContext(),
                             ColoringActivity.class);
                     intent.putExtra("urlImagePosition", urlImagePosition);
@@ -107,71 +133,150 @@ public class MenuDialogFragment extends DialogFragment {
                     intent.setData(contentUri);
                     v.getContext().startActivity(intent);
                     dismiss();
+                }
             }
         });
 
         retyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("This image was delete, are you sure? All progress will be lost")
-                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ContentResolver contentResolver = getContext().getContentResolver();
-                                ContentValues cv = new ContentValues();
-                                cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
-                                int rowsUpdate = contentResolver.update(contentUri, cv, null, null);
-                                if (rowsUpdate != 0) {
-                                    stateImagePosition = null;
+
+                if (!isUserHavePrem) {
+                    SplashScreenActivity.adsManager.showInterstitialAds(requireActivity());
+                    InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;
+                    mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                            builder.setMessage("This image was delete, are you sure? All progress will be lost")
+                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ContentResolver contentResolver = requireContext().getContentResolver();
+                                            ContentValues cv = new ContentValues();
+                                            cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
+                                            int rowsUpdate = contentResolver.update(contentUri, cv, null, null);
+                                            if (rowsUpdate != 0) {
+                                                stateImagePosition = null;
+                                            }
+                                            Intent intent = new Intent(v.getContext(),
+                                                    ColoringActivity.class);
+                                            intent.putExtra("urlImagePosition", urlImagePosition);
+                                            intent.putExtra("nameImage", namePosition);
+                                            intent.putExtra("keyPosition", imageKeyPosition);
+                                            intent.putExtra("categoryPosition", categoryPosition);
+                                            intent.putExtra("statePosition", stateImagePosition);
+                                            intent.putExtra("position", posit);
+                                            intent.setData(contentUri);
+                                            v.getContext().startActivity(intent);
+                                            dismiss();
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            builder.show();
+                        }
+                    });
+                }
+                else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                    builder.setMessage("This image was delete, are you sure? All progress will be lost")
+                            .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ContentResolver contentResolver = requireContext().getContentResolver();
+                                    ContentValues cv = new ContentValues();
+                                    cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
+                                    int rowsUpdate = contentResolver.update(contentUri, cv, null, null);
+                                    if (rowsUpdate != 0) {
+                                        stateImagePosition = null;
+                                    }
+                                    Intent intent = new Intent(v.getContext(),
+                                            ColoringActivity.class);
+                                    intent.putExtra("urlImagePosition", urlImagePosition);
+                                    intent.putExtra("nameImage", namePosition);
+                                    intent.putExtra("keyPosition", imageKeyPosition);
+                                    intent.putExtra("categoryPosition", categoryPosition);
+                                    intent.putExtra("statePosition", stateImagePosition);
+                                    intent.putExtra("position", posit);
+                                    intent.setData(contentUri);
+                                    v.getContext().startActivity(intent);
+                                    dismiss();
                                 }
-                                Intent intent = new Intent(v.getContext(),
-                                        ColoringActivity.class);
-                                intent.putExtra("urlImagePosition", urlImagePosition);
-                                intent.putExtra("nameImage", namePosition);
-                                intent.putExtra("keyPosition", imageKeyPosition);
-                                intent.putExtra("categoryPosition", categoryPosition);
-                                intent.putExtra("statePosition", stateImagePosition);
-                                intent.putExtra("position", posit);
-                                intent.setData(contentUri);
-                                v.getContext().startActivity(intent);
-                                dismiss();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.show();
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    builder.show();
+                }
+
             }
         });
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setMessage("This image was delete, are you sure? All progress will be lost")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ContentResolver contentResolver = getContext().getContentResolver();
-                                ContentValues cv = new ContentValues();
-                                cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
-                                int rowsUpdate = contentResolver.update(contentUri, cv, null, null);
-                                if (rowsUpdate != 0) {
-                                    stateImagePosition = null;
+
+                if (!isUserHavePrem) {
+                    SplashScreenActivity.adsManager.showInterstitialAds(requireActivity());
+                    InterstitialAd mInterstitialAds = AdsManager.mInterstitialAd;;
+                    mInterstitialAds.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                            builder.setMessage("This image was delete, are you sure? All progress will be lost")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            ContentResolver contentResolver = requireContext().getContentResolver();
+                                            ContentValues cv = new ContentValues();
+                                            cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
+                                            int rowsUpdate = contentResolver.update(contentUri, cv, null, null);
+                                            if (rowsUpdate != 0) {
+                                                stateImagePosition = null;
+                                            }
+                                            dismiss();
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            builder.show();
+                        }
+                    });
+                }
+                else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                    builder.setMessage("This image was delete, are you sure? All progress will be lost")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ContentResolver contentResolver = requireContext().getContentResolver();
+                                    ContentValues cv = new ContentValues();
+                                    cv.putNull(MCDataContract.NewImages.MC_NEW_IMAGE_STATE);
+                                    int rowsUpdate = contentResolver.update(contentUri, cv, null, null);
+                                    if (rowsUpdate != 0) {
+                                        stateImagePosition = null;
+                                    }
+                                    dismiss();
                                 }
-                                dismiss();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.show();
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                    builder.show();
+                }
 
             }
         });
